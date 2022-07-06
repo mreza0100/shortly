@@ -32,7 +32,8 @@ func (h *jwtHelper) CreateToken(email string) (token string, err error) {
 	claims["exp"] = time.Now().Add(time.Hour * h.expire).Unix()
 
 	tokenWithClaims := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
-	return tokenWithClaims.SignedString([]byte(h.secret))
+	t, err := tokenWithClaims.SignedString([]byte(h.secret))
+	return t, err
 }
 
 func (h *jwtHelper) ParseToken(token string) (email string, err error) {
@@ -45,12 +46,17 @@ func (h *jwtHelper) ParseToken(token string) (email string, err error) {
 	claims, ok := at.Claims.(jwt.MapClaims)
 	if ok && at.Valid {
 		// check if token is expired
-		if time.Unix(int64(claims["exp"].(float64)), 0).Sub(time.Now()) < 0 {
-			return "", errors.New("Token is expired")
-		}
-		username := claims["username"].(string)
 
-		return username, nil
+		if time.Unix(int64(claims["exp"].(float64)), 0).Before(time.Now()) {
+			return "", errors.New("token is expired")
+		}
+
+		// if time.Unix(int64(claims["exp"].(float64)), 0).Sub(time.Now()) < 0 {
+		// 	return "", errors.New("Token is expired")
+		// }
+		email := claims["email"].(string)
+
+		return email, nil
 	}
 	return "", err
 }
