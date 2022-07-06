@@ -4,39 +4,41 @@ import (
 	"fmt"
 
 	"github.com/gin-gonic/gin"
+	"github.com/mreza0100/shortly/internal/ports/services"
 )
 
-const defaultPort = "8080"
-
-func NewHttpServer(port string, service interface{}) *server {
-	if port == "" {
-		port = defaultPort
-	}
-	return &server{port: port, service: service}
+func NewHttpServer(port string, isDev bool, services *services.Services) *server {
+	return &server{port: port, isDev: isDev, service: services}
 }
 
 type server struct {
 	port      string
+	isDev     bool
 	ginClient *gin.Engine
-	service   interface{}
+	service   *services.Services
 }
 
-func (s *server) Serve() {
+func (s *server) ListenAndServe() <-chan error {
 	s.ginClient = gin.Default()
-	s.ginClient.Use(gin.Recovery())
-	s.ginClient.Use(gin.Logger())
-	s.ginClient.Use(gin.LoggerWithConfig(gin.LoggerConfig{
-		Output: gin.DefaultErrorWriter,
-	}))
 	s.registerRoutes()
 
-	go func() {
-		port := fmt.Sprint(":", s.port)
-		if err := s.ginClient.Run(port); err != nil {
-			panic(err)
+	if s.isDev {
+		gin.SetMode(gin.DebugMode)
+	} else {
+		gin.SetMode(gin.ReleaseMode)
+	}
+
+	errCh := make(chan error)
+	go func(errCh chan error) {
+		addr := fmt.Sprint(":", s.port)
+		if err := s.ginClient.Run(addr); err != nil {
+			errCh <- err
 		}
-	}()
+	}(errCh)
+
+	return errCh
 }
 
 func (s *server) registerRoutes() {
+	registerUserRoutes(s.ginClient, s.service.User)
 }
