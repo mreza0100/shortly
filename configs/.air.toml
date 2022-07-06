@@ -3,7 +3,7 @@ testdata_dir = "testdata"
 tmp_dir = "./tmp"
 
 [build]
-  bin = "./tmp/app run"
+  bin = "./tmp/cmd run"
   cmd = "go build -o './tmp' ./cmd"
   delay = 1000
   exclude_dir = ["assets", "tmp", "vendor", "testdata"]
