@@ -1,10 +1,15 @@
 package jwt
 
 import (
-	"errors"
 	"time"
 
 	"github.com/dgrijalva/jwt-go"
+	er "github.com/mreza0100/shortly/pkg/errors"
+)
+
+const (
+	emailConst = "email"
+	expConst   = "exp"
 )
 
 type JWTHelper interface {
@@ -15,50 +20,53 @@ type JWTHelper interface {
 
 func New(secret string, expire time.Duration) JWTHelper {
 	return &jwtHelper{
-		secret: secret,
+		secret: []byte(secret),
 		expire: expire,
 	}
 }
 
 type jwtHelper struct {
-	secret string
+	secret []byte
 	expire time.Duration
 }
 
 func (h *jwtHelper) CreateToken(email string) (token string, err error) {
-	claims := jwt.MapClaims{}
-
-	claims["email"] = email
-	claims["exp"] = time.Now().Add(time.Hour * h.expire).Unix()
+	claims := jwt.MapClaims{
+		emailConst: email,
+		expConst:   time.Now().Add(time.Hour * h.expire).Unix(),
+	}
 
 	tokenWithClaims := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
-	t, err := tokenWithClaims.SignedString([]byte(h.secret))
-	return t, err
+
+	return tokenWithClaims.SignedString(h.secret)
 }
 
 func (h *jwtHelper) ParseToken(token string) (email string, err error) {
-	at, err := jwt.Parse(token, func(token *jwt.Token) (interface{}, error) {
-		return []byte(h.secret), nil
+	t, err := jwt.Parse(token, func(token *jwt.Token) (interface{}, error) {
+		return h.secret, nil
 	})
 	if err != nil {
-		return "", err
+		return "", er.InvalidToken
 	}
-	claims, ok := at.Claims.(jwt.MapClaims)
-	if ok && at.Valid {
-		// check if token is expired
 
-		if time.Unix(int64(claims["exp"].(float64)), 0).Before(time.Now()) {
-			return "", errors.New("token is expired")
-		}
-
-		// if time.Unix(int64(claims["exp"].(float64)), 0).Sub(time.Now()) < 0 {
-		// 	return "", errors.New("Token is expired")
-		// }
-		email := claims["email"].(string)
-
-		return email, nil
+	claims, ok := t.Claims.(jwt.MapClaims)
+	if !ok || !t.Valid {
+		return "", er.InvalidToken
 	}
-	return "", err
+
+	exp, ok := claims[expConst].(float64)
+	if !ok {
+		return "", er.InvalidToken
+	}
+	if time.Unix(int64(exp), 0).Before(time.Now()) {
+		return "", er.ExpiredToken
+	}
+
+	email, ok = claims[emailConst].(string)
+	if !ok {
+		return "", er.InvalidToken
+	}
+	return email, nil
 }
 
 func (h *jwtHelper) IsTokenValid(token string) (isValid bool) {
