@@ -3,7 +3,7 @@ package main
 import (
 	"log"
 
-	cassandrarepo "github.com/mreza0100/shortly/internal/driven/cassandra"
+	cassandrarepo "github.com/mreza0100/shortly/internal/adapters/driven/cassandra"
 	"github.com/mreza0100/shortly/internal/ports/driven"
 	services_ports "github.com/mreza0100/shortly/internal/ports/services"
 	"github.com/mreza0100/shortly/internal/presenters/http"
