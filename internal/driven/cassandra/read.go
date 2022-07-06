@@ -2,22 +2,22 @@ package cassandrarepo
 
 import (
 	"github.com/gocql/gocql"
-	"github.com/mreza0100/shortly/internal/entities"
+	"github.com/mreza0100/shortly/internal/models"
 )
 
 type cassandraRead struct {
 	session *gocql.Session
 }
 
-func (r cassandraRead) GetUserByEmail(email string) (*entities.User, error) {
+func (r cassandraRead) GetUserByEmail(email string) (*models.User, error) {
 	const cql = `SELECT * FROM users WHERE email = ? LIMIT 1`
 	iter := r.session.Query(cql, email).Iter()
 
-	users := make([]entities.User, 0, 1)
+	users := make([]models.User, 0, 1)
 
 	m := map[string]interface{}{}
 	for iter.MapScan(m) {
-		users = append(users, entities.User{
+		users = append(users, models.User{
 			Email:    m["email"].(string),
 			Password: m["password"].(string),
 		})

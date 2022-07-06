@@ -3,7 +3,7 @@ package services
 import (
 	"errors"
 
-	"github.com/mreza0100/shortly/internal/entities"
+	"github.com/mreza0100/shortly/internal/models"
 	"github.com/mreza0100/shortly/internal/ports/driven"
 	"github.com/mreza0100/shortly/internal/ports/services"
 	"github.com/mreza0100/shortly/pkg/jwt"
@@ -45,13 +45,13 @@ func (s *user) Signup(email, password string) error {
 		return err
 	}
 
-	return s.cassandraWrite.UserSignup(&entities.User{
+	return s.cassandraWrite.UserSignup(&models.User{
 		Email:    email,
 		Password: hashpass,
 	})
 }
 
-func (s *user) Login(email, password string) (string, error) {
+func (s *user) Signin(email, password string) (string, error) {
 	user, err := s.cassandraRead.GetUserByEmail(email)
 	if err != nil {
 		return "", err

@@ -6,5 +6,5 @@ type Services struct {
 
 type UserServicePort interface {
 	Signup(email, password string) error
-	Login(email, password string) (string, error)
+	Signin(email, password string) (string, error)
 }

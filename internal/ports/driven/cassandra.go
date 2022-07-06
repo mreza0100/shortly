@@ -1,11 +1,11 @@
 package driven
 
-import "github.com/mreza0100/shortly/internal/entities"
+import "github.com/mreza0100/shortly/internal/models"
 
 type CassandraReadPort interface {
-	GetUserByEmail(email string) (*entities.User, error)
+	GetUserByEmail(email string) (*models.User, error)
 }
 
 type CassandraWritePort interface {
-	UserSignup(user *entities.User) error
+	UserSignup(user *models.User) error
 }

@@ -10,7 +10,7 @@ func registerUserRoutes(ginClient *gin.Engine, userService services.UserServiceP
 	group := ginClient.Group("/user")
 
 	group.POST("/signup", userHandlers.signup())
-	group.POST("/login", userHandlers.login())
+	group.POST("/signin", userHandlers.signin())
 }
 
 type userHandlers struct {
@@ -41,7 +41,7 @@ func (u *userHandlers) signup() gin.HandlerFunc {
 	}
 }
 
-func (u *userHandlers) login() gin.HandlerFunc {
+func (u *userHandlers) signin() gin.HandlerFunc {
 	type RequestBody struct {
 		Email    string `json:"email"`
 		Password string `json:"password"`
@@ -58,7 +58,7 @@ func (u *userHandlers) login() gin.HandlerFunc {
 			return
 		}
 
-		token, err := u.userService.Login(requestBody.Email, requestBody.Password)
+		token, err := u.userService.Signin(requestBody.Email, requestBody.Password)
 		if err != nil {
 			c.JSON(400, ResponseBody{Error: err.Error()})
 			return
