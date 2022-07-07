@@ -12,10 +12,12 @@ type ConnectionConfigs struct {
 	Keyspace string
 }
 
-func GetCassandraConnection(cfg *ConnectionConfigs) (*gocql.Session, error) {
+func CreateConnection(cfg *ConnectionConfigs) (*gocql.Session, error) {
 	cluster := gocql.NewCluster(cfg.Host)
+
 	cluster.Keyspace = cfg.Keyspace
-	cluster.ConnectTimeout, cluster.Timeout = time.Second*5, time.Second*5
+	cluster.ConnectTimeout = time.Second * 5
+	cluster.Timeout = time.Second * 5
 
 	return cluster.CreateSession()
 }
