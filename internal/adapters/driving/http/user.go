@@ -33,7 +33,7 @@ func (u *userHandlers) signup() gin.HandlerFunc {
 			return
 		}
 
-		err := u.userService.Signup(requestBody.Email, requestBody.Password)
+		err := u.userService.Signup(c.Request.Context(), requestBody.Email, requestBody.Password)
 		if err != nil {
 			c.JSON(400, ResponseBody{Error: err.Error()})
 			return
@@ -58,7 +58,7 @@ func (u *userHandlers) signin() gin.HandlerFunc {
 			return
 		}
 
-		token, err := u.userService.Signin(requestBody.Email, requestBody.Password)
+		token, err := u.userService.Signin(c.Request.Context(), requestBody.Email, requestBody.Password)
 		if err != nil {
 			c.JSON(400, ResponseBody{Error: err.Error()})
 			return

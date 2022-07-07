@@ -1,6 +1,7 @@
 package services
 
 import (
+	"context"
 	"errors"
 
 	"github.com/mreza0100/shortly/internal/models"
@@ -33,8 +34,8 @@ type user struct {
 	jwtUtil        jwt.JWTHelper
 }
 
-func (s *user) Signup(email, password string) error {
-	if user, err := s.cassandraRead.GetUserByEmail(email); err != nil {
+func (s *user) Signup(ctx context.Context, email, password string) error {
+	if user, err := s.cassandraRead.GetUserByEmail(ctx, email); err != nil {
 		return err
 	} else if user != nil && err == nil {
 		return errors.New("Username already exists")
@@ -45,14 +46,14 @@ func (s *user) Signup(email, password string) error {
 		return err
 	}
 
-	return s.cassandraWrite.UserSignup(&models.User{
+	return s.cassandraWrite.UserSignup(ctx, &models.User{
 		Email:    email,
 		Password: hashpass,
 	})
 }
 
-func (s *user) Signin(email, password string) (string, error) {
-	user, err := s.cassandraRead.GetUserByEmail(email)
+func (s *user) Signin(ctx context.Context, email, password string) (string, error) {
+	user, err := s.cassandraRead.GetUserByEmail(ctx, email)
 	if err != nil {
 		return "", err
 	}

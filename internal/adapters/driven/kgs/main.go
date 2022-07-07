@@ -1,20 +1,19 @@
 package kgs
 
-import "math"
-
-const updateInterval = 100
+import (
+	"math"
+)
 
 type InitKGSOptions struct {
-	SaveCounter         func(int)
-	LastModifiedCounter int
+	SaveCounter         func(int64)
+	LastModifiedCounter int64
 }
 
-func NewKGS(opt InitKGSOptions) *kgs {
+func New(opt InitKGSOptions) *kgs {
 	kgs := &kgs{
-		counter:            opt.LastModifiedCounter,
-		lastUpdatedCounter: opt.LastModifiedCounter,
-		saveCounter:        opt.SaveCounter,
-		seed:               make([]byte, 0, 62),
+		counter:     opt.LastModifiedCounter,
+		saveCounter: opt.SaveCounter,
+		seed:        make([]byte, 0, 62),
 	}
 	kgs.fillSeed()
 
@@ -26,17 +25,16 @@ type KGS interface {
 }
 
 type kgs struct {
-	counter            int
-	lastUpdatedCounter int
-	seed               []byte
-	saveCounter        func(int)
+	counter     int64
+	seed        []byte
+	saveCounter func(int64)
 }
 
 func (kgs *kgs) updateCounter() {
 	kgs.counter++
 
-	if kgs.counter >= kgs.lastUpdatedCounter+updateInterval {
-		kgs.lastUpdatedCounter = kgs.counter
+	// TODO: a system to determine when to save the counter based on the number of keys generated and requests/secent
+	if kgs.counter%10 == 0 {
 		kgs.saveCounter(kgs.counter)
 	}
 }
@@ -58,9 +56,9 @@ func (kgs *kgs) fillSeed() {
 func (kgs *kgs) GetKey() string {
 	key := make([]byte, 0, 10)
 
-	for c := kgs.counter; c != 0; {
+	for c := float64(kgs.counter); c != 0; {
 		key = append(key, kgs.seed[int(c)%62])
-		c = int(math.Floor(float64(c) / 62))
+		c = math.Floor(c / 62)
 	}
 
 	kgs.updateCounter()

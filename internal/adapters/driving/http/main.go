@@ -5,17 +5,31 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/mreza0100/shortly/internal/ports/services"
+	"github.com/mreza0100/shortly/pkg/jwt"
 )
 
-func NewHttpServer(port string, isDev bool, services *services.Services) *server {
-	return &server{port: port, isDev: isDev, service: services}
+type NewHttpServerOpts struct {
+	Port     string
+	IsDev    bool
+	JwtUtils jwt.JWTHelper
+	Services *services.Services
+}
+
+func NewHttpServer(opts NewHttpServerOpts) *server {
+	return &server{
+		port:     opts.Port,
+		isDev:    opts.IsDev,
+		jwtUtils: opts.JwtUtils,
+		services: opts.Services,
+	}
 }
 
 type server struct {
 	port      string
 	isDev     bool
 	ginClient *gin.Engine
-	service   *services.Services
+	services  *services.Services
+	jwtUtils  jwt.JWTHelper
 }
 
 func (s *server) ListenAndServe() <-chan error {
@@ -31,14 +45,13 @@ func (s *server) ListenAndServe() <-chan error {
 	errCh := make(chan error)
 	go func(errCh chan error) {
 		addr := fmt.Sprint(":", s.port)
-		if err := s.ginClient.Run(addr); err != nil {
-			errCh <- err
-		}
+		errCh <- s.ginClient.Run(addr)
 	}(errCh)
 
 	return errCh
 }
 
 func (s *server) registerRoutes() {
-	registerUserRoutes(s.ginClient, s.service.User)
+	registerUserRoutes(s.ginClient, s.services.User)
+	registerLinkRoutes(s.ginClient, s.jwtUtils, s.services.Link)
 }

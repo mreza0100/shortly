@@ -1,10 +1,17 @@
 package services
 
+import "context"
+
 type Services struct {
 	User UserServicePort
+	Link LinkServicePort
+}
+
+type LinkServicePort interface {
+	NewLink(ctx context.Context, link, userEmail string) (string, error)
 }
 
 type UserServicePort interface {
-	Signup(email, password string) error
-	Signin(email, password string) (string, error)
+	Signup(ctx context.Context, email, password string) error
+	Signin(ctx context.Context, email, password string) (string, error)
 }

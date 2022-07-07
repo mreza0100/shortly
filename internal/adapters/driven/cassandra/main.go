@@ -11,7 +11,8 @@ func NewCassandraRepository(session *gocql.Session) (driven.CassandraReadPort, d
 		return nil, nil, err
 	}
 
-	read, write := &cassandraRead{session: session}, &cassandraWrite{session: session}
+	read := &cassandraRead{session: session}
+	write := &cassandraWrite{session: session}
 
 	return read, write, nil
 }
