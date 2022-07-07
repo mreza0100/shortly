@@ -8,8 +8,8 @@ import (
 )
 
 const (
-	emailConst = "email"
-	expConst   = "exp"
+	emailKey = "email"
+	expKey   = "exp"
 )
 
 type JWTHelper interface {
@@ -32,8 +32,8 @@ type jwtHelper struct {
 
 func (h *jwtHelper) CreateToken(email string) (token string, err error) {
 	claims := jwt.MapClaims{
-		emailConst: email,
-		expConst:   time.Now().Add(time.Hour * h.expire).Unix(),
+		emailKey: email,
+		expKey:   time.Now().Add(time.Hour * h.expire).Unix(),
 	}
 
 	tokenWithClaims := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
@@ -54,7 +54,7 @@ func (h *jwtHelper) ParseToken(token string) (email string, err error) {
 		return "", er.InvalidToken
 	}
 
-	exp, ok := claims[expConst].(float64)
+	exp, ok := claims[expKey].(float64)
 	if !ok {
 		return "", er.InvalidToken
 	}
@@ -62,7 +62,7 @@ func (h *jwtHelper) ParseToken(token string) (email string, err error) {
 		return "", er.ExpiredToken
 	}
 
-	email, ok = claims[emailConst].(string)
+	email, ok = claims[emailKey].(string)
 	if !ok {
 		return "", er.InvalidToken
 	}
