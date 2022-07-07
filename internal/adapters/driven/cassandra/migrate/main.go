@@ -5,6 +5,8 @@ import (
 	"github.com/gocql/gocql"
 )
 
+const CounterID = 1
+
 func MigrateCassandra(session *gocql.Session) error {
 	var err error
 
@@ -12,6 +14,9 @@ func MigrateCassandra(session *gocql.Session) error {
 		return err
 	}
 	if err = migrateLinkTable(session); err != nil {
+		return err
+	}
+	if err = migrateCounterTable(session); err != nil {
 		return err
 	}
 
@@ -38,13 +43,29 @@ func migrateLinkTable(session *gocql.Session) error {
 			short text,
 			destination text,
 
-			username text,
-
+			user_email text,
 			created_at timestamp,
-			expires_at timestamp,
 
-			PRIMARY KEY ((short), username, expires_at)
+			PRIMARY KEY ((short), user_email)
 		)
 	`
 	return session.Query(cql).Exec()
+}
+
+func migrateCounterTable(session *gocql.Session) error {
+	const createTableCmd = `
+	CREATE TABLE IF NOT EXISTS counter
+		(
+			id         int,
+			counter    int,
+
+			PRIMARY KEY (int)
+		)
+	`
+	if err := session.Query(createTableCmd).Exec(); err != nil {
+		return err
+	}
+
+	const inserCounterCmd = `INSERT INTO counter (id, counter) VALUES (?, ?)`
+	return session.Query(inserCounterCmd, CounterID, 0).Exec()
 }
