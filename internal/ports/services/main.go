@@ -9,6 +9,7 @@ type Services struct {
 
 type LinkServicePort interface {
 	NewLink(ctx context.Context, link, userEmail string) (string, error)
+	GetDestinationByLink(ctx context.Context, link string) (string, error)
 }
 
 type UserServicePort interface {

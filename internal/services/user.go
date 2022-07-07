@@ -2,11 +2,11 @@ package services
 
 import (
 	"context"
-	"errors"
 
 	"github.com/mreza0100/shortly/internal/models"
 	"github.com/mreza0100/shortly/internal/ports/driven"
 	"github.com/mreza0100/shortly/internal/ports/services"
+	er "github.com/mreza0100/shortly/pkg/errors"
 	"github.com/mreza0100/shortly/pkg/jwt"
 	passwordhasher "github.com/mreza0100/shortly/pkg/password"
 )
@@ -38,7 +38,7 @@ func (s *user) Signup(ctx context.Context, email, password string) error {
 	if user, err := s.cassandraRead.GetUserByEmail(ctx, email); err != nil {
 		return err
 	} else if user != nil && err == nil {
-		return errors.New("Username already exists")
+		return er.UsernameAlreadyExists
 	}
 
 	hashpass, err := s.passwordHasher.Hash(password)
@@ -58,12 +58,12 @@ func (s *user) Signin(ctx context.Context, email, password string) (string, erro
 		return "", err
 	}
 	if user == nil {
-		return "", errors.New("Invalid email or password")
+		return "", er.InvalidEmailOrPassword
 	}
 
 	err = s.passwordHasher.Compare(user.Password, password)
 	if err != nil {
-		return "", errors.New("Invalid email or password")
+		return "", er.InvalidEmailOrPassword
 	}
 
 	return s.jwtUtil.CreateToken(user.Email)

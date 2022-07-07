@@ -1,16 +1,23 @@
 package http
 
 import (
+	"net/http"
+	"strings"
+
 	"github.com/gin-gonic/gin"
 	"github.com/mreza0100/shortly/internal/adapters/driving/http/middleware"
 	"github.com/mreza0100/shortly/internal/ports/services"
 	"github.com/mreza0100/shortly/pkg/jwt"
 )
 
+const linkParamKey = "link"
+
 func registerLinkRoutes(ginClient *gin.Engine, jwtUtils jwt.JWTHelper, linkService services.LinkServicePort) {
 	linkHandlers := &linkHandlers{linkService: linkService}
-	group := ginClient.Group("/link")
 
+	ginClient.GET("/:"+linkParamKey, linkHandlers.redirectByLink())
+
+	group := ginClient.Group("/link")
 	group.POST("/", middleware.PrivateRoute(jwtUtils), linkHandlers.newLink())
 }
 
@@ -40,5 +47,26 @@ func (u *linkHandlers) newLink() gin.HandlerFunc {
 		}
 
 		c.JSON(200, ResponseBody{Short: short})
+	}
+}
+
+func (u *linkHandlers) redirectByLink() gin.HandlerFunc {
+	type ResponseBody struct {
+		Error string `json:"error"`
+	}
+	return func(c *gin.Context) {
+		shortLink := c.Param(linkParamKey)
+		destination, err := u.linkService.GetDestinationByLink(c.Request.Context(), shortLink)
+		if err != nil {
+			c.JSON(400, ResponseBody{Error: err.Error()})
+			return
+		}
+
+		// check if the destination have http:// or https://
+		if !strings.HasPrefix(destination, "http://") && !strings.HasPrefix(destination, "https://") {
+			destination = "http://" + destination
+		}
+
+		c.Redirect(http.StatusMovedPermanently, destination)
 	}
 }

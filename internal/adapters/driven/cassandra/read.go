@@ -2,10 +2,10 @@ package cassandrarepo
 
 import (
 	"context"
-	"errors"
 
 	"github.com/gocql/gocql"
 	"github.com/mreza0100/shortly/internal/models"
+	er "github.com/mreza0100/shortly/pkg/errors"
 )
 
 type cassandraRead struct {
@@ -28,13 +28,13 @@ func (r *cassandraRead) GetUserByEmail(_ context.Context, email string) (*models
 	}
 
 	if len(users) <= 0 {
-		return nil, nil
+		return nil, er.NotFound
 	}
 	return &users[0], nil
 }
 
-func (r *cassandraRead) GetDestinationByLink(_ context.Context, key string, isCustom bool) (string, error) {
-	query := r.session.Query(`SELECT destination FROM links WHERE short = ? AND is_custom = ? LIMIT 1`, key, isCustom)
+func (r *cassandraRead) GetDestinationByLink(_ context.Context, shortLink string) (string, error) {
+	query := r.session.Query(`SELECT destination FROM links WHERE short = ? LIMIT 1`, shortLink)
 	if err := query.Exec(); err != nil {
 		return "", err
 	}
@@ -43,7 +43,7 @@ func (r *cassandraRead) GetDestinationByLink(_ context.Context, key string, isCu
 	query.Iter().Scan(&destination)
 
 	if destination == "" {
-		return "", errors.New("Link not found")
+		return "", er.NotFound
 	}
 	return destination, nil
 }

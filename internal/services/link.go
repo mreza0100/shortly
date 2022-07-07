@@ -38,3 +38,9 @@ func (l *link) NewLink(ctx context.Context, link, userEmail string) (string, err
 
 	return shortURL, err
 }
+
+func (l *link) GetDestinationByLink(ctx context.Context, link string) (string, error) {
+	destination, err := l.cassandraRead.GetDestinationByLink(ctx, link)
+
+	return destination, err
+}
