@@ -46,7 +46,7 @@ func newKGS(cassandraRead ports.CassandraReadPort, cassandraWrite ports.Cassandr
 				log.Fatal("Failed to save counter: ", err)
 			}
 		},
-		LastModifiedCounter: counter,
+		LastSavedCounter: counter,
 	})
 
 	return kgs, nil

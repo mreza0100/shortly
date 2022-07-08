@@ -7,13 +7,13 @@ import (
 )
 
 type InitKGSOptions struct {
-	SaveCounter         func(int64)
-	LastModifiedCounter int64
+	SaveCounter      func(int64)
+	LastSavedCounter int64
 }
 
 func New(opt InitKGSOptions) ports.KGS {
 	kgs := &kgs{
-		counter:     opt.LastModifiedCounter,
+		counter:     opt.LastSavedCounter,
 		saveCounter: opt.SaveCounter,
 		seed:        make([]byte, 0, 62),
 	}
