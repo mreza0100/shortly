@@ -31,6 +31,10 @@ type jwtHelper struct {
 }
 
 func (h *jwtHelper) CreateToken(email string) (token string, err error) {
+	if email == "" {
+		return "", er.EmailNotValid
+	}
+
 	claims := jwt.MapClaims{
 		emailKey: email,
 		expKey:   time.Now().Add(time.Hour * h.expire).Unix(),
