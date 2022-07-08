@@ -17,17 +17,24 @@ func TestJWTHelper_CreateToken(t *testing.T) {
 		wantErr     bool
 	}{
 		{
-			name:        "test1",
+			name:        "test 1 - simple token",
 			secret:      "secret",
 			expireAfter: time.Hour,
 			email:       "fake@mail.com",
 			wantErr:     false,
 		},
 		{
-			name:        "test2",
+			name:        "test 2 - empty email",
 			secret:      "secret123",
 			expireAfter: time.Hour,
 			email:       "",
+			wantErr:     true,
+		},
+		{
+			name:        "test 2 - empty secret",
+			secret:      "",
+			expireAfter: time.Hour,
+			email:       "fake@mail.com",
 			wantErr:     true,
 		},
 	}

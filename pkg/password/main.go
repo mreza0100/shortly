@@ -8,6 +8,9 @@ type PasswordHasher interface {
 }
 
 func New(salt string) PasswordHasher {
+	if salt == "" {
+		panic("salt cannot be empty")
+	}
 	return &passwordHasher{salt: salt}
 }
 
