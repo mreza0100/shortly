@@ -12,28 +12,24 @@ type cassandraWrite struct {
 }
 
 func (w *cassandraWrite) UserSignup(_ context.Context, user *models.User) error {
-	const insertUserCQL = `INSERT INTO users (email, password) VALUES (?, ?)`
-	return w.session.Query(insertUserCQL, user.Email, user.Password).Exec()
+	return w.session.Query(`INSERT INTO users (email, password) VALUES (?, ?)`, user.Email, user.Password).Exec()
 }
 
 func (w *cassandraWrite) SaveLink(_ context.Context, short, destination, email string) error {
-	const insertLinkCQL = `
+	return w.session.Query(`
 		INSERT INTO links
 		(short, destination, user_email, created_at)
 		VALUES (?, ?, ?, toTimestamp(now()))
-	`
-	return w.session.Query(insertLinkCQL, short, destination, email).Exec()
+	`, short, destination, email).Exec()
 }
 
 func (w *cassandraWrite) deleteCounter(_ context.Context) error {
 	// In cassandra, there is no way to delete a row by primary key or without a where clause.
-	const truncateCounterCQL = `TRUNCATE counter`
-	return w.session.Query(truncateCounterCQL).Exec()
+	return w.session.Query(`TRUNCATE counter`).Exec()
 }
 
 func (w *cassandraWrite) insertCounter(_ context.Context, newCounter int64) error {
-	const insertCounterCQL = `INSERT INTO counter (counter) VALUES (?)`
-	return w.session.Query(insertCounterCQL, newCounter).Exec()
+	return w.session.Query(`INSERT INTO counter (counter) VALUES (?)`, newCounter).Exec()
 }
 
 func (w *cassandraWrite) UpdateCounter(ctx context.Context, newCounter int64) error {

@@ -5,13 +5,11 @@ import (
 )
 
 func insertCounterRow(session *gocql.Session) error {
-	const inserCounterCmd = `INSERT INTO counter (counter) VALUES (?)`
-	return session.Query(inserCounterCmd, 1).Exec()
+	return session.Query(`INSERT INTO counter (counter) VALUES (1)`).Exec()
 }
 
 func isCounterTableEmpty(session *gocql.Session) (bool, error) {
-	const existsCQL = `SELECT EXISTS (SELECT 1 FROM counter LIMIT 1)`
-	iter := session.Query(existsCQL).Iter()
+	iter := session.Query(`SELECT EXISTS (SELECT 1 FROM counter LIMIT 1)`).Iter()
 
 	var exists bool
 	iter.Scan(&exists)

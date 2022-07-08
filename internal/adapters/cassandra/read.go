@@ -13,8 +13,7 @@ type cassandraRead struct {
 }
 
 func (r *cassandraRead) GetUserByEmail(_ context.Context, email string) (*models.User, error) {
-	const selectUserCQL = `SELECT * FROM users WHERE email = ? LIMIT 1`
-	iter := r.session.Query(selectUserCQL, email).Iter()
+	iter := r.session.Query(`SELECT * FROM users WHERE email = ? LIMIT 1`, email).Iter()
 
 	m := map[string]interface{}{}
 	if !iter.MapScan(m) {
