@@ -4,9 +4,9 @@ import (
 	"context"
 	"log"
 
-	cassandra_repo "github.com/mreza0100/shortly/internal/adapters/driven/cassandra"
-	"github.com/mreza0100/shortly/internal/adapters/driven/kgs"
-	http "github.com/mreza0100/shortly/internal/adapters/driving/http"
+	cassandra_repo "github.com/mreza0100/shortly/internal/adapters/cassandra"
+	http "github.com/mreza0100/shortly/internal/adapters/http"
+	"github.com/mreza0100/shortly/internal/adapters/kgs"
 	"github.com/mreza0100/shortly/internal/ports"
 	"github.com/mreza0100/shortly/internal/services"
 	cassandra_connection "github.com/mreza0100/shortly/pkg/connection/cassandra"

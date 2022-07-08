@@ -2,7 +2,7 @@ package cassandrarepo
 
 import (
 	"github.com/gocql/gocql"
-	"github.com/mreza0100/shortly/internal/adapters/driven/cassandra/migrate"
+	"github.com/mreza0100/shortly/internal/adapters/cassandra/migrate"
 	"github.com/mreza0100/shortly/internal/ports"
 )
 
