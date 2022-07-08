@@ -12,8 +12,8 @@ type cassandraWrite struct {
 }
 
 func (w *cassandraWrite) UserSignup(_ context.Context, user *models.User) error {
-	const userInsertCQL = `INSERT INTO users (email, password) VALUES (?, ?)`
-	return w.session.Query(userInsertCQL, user.Email, user.Password).Exec()
+	const insertUserCQL = `INSERT INTO users (email, password) VALUES (?, ?)`
+	return w.session.Query(insertUserCQL, user.Email, user.Password).Exec()
 }
 
 func (w *cassandraWrite) SaveLink(_ context.Context, short, destination, email string) error {
