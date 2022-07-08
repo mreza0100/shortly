@@ -36,7 +36,7 @@ func (r *cassandraRead) GetDestinationByLink(_ context.Context, shortLink string
 
 	var destination string
 	if !query.Iter().Scan(&destination) {
-		return "", er.GeneralFailure
+		return "", er.NotFound
 	}
 
 	if destination == "" {
@@ -53,7 +53,7 @@ func (r *cassandraRead) GetCounter(_ context.Context) (int64, error) {
 
 	var counter int64
 	if !query.Iter().Scan(&counter) {
-		return 0, er.GeneralFailure
+		return 0, er.NotFound
 	}
 
 	return counter, nil
