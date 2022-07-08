@@ -8,7 +8,7 @@ import (
 )
 
 type actions struct {
-	cfg *Configs
+	cfg *configs
 }
 
 func main() {

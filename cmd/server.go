@@ -16,11 +16,11 @@ import (
 	"github.com/urfave/cli"
 )
 
-func getCassandraRepo(cfg *Configs) (ports.CassandraReadPort, ports.CassandraWritePort) {
+func getCassandraRepo(cfg *cassandraConnectionConfigs) (ports.CassandraReadPort, ports.CassandraWritePort) {
 	session, err := cassandra_connection.CreateConnection(&cassandra_connection.ConnectionConfigs{
-		Host:     cfg.Cassandra.Host,
-		Port:     cfg.Cassandra.Port,
-		Keyspace: cfg.Cassandra.Keyspace,
+		Host:     cfg.Host,
+		Port:     cfg.Port,
+		Keyspace: cfg.Keyspace,
 	})
 	if err != nil {
 		log.Fatal(err)
@@ -53,9 +53,9 @@ func newKGS(cassandraRead ports.CassandraReadPort, cassandraWrite ports.Cassandr
 }
 
 func (a *actions) run(c *cli.Context) error {
-	cassandraRead, cassandraWrite := getCassandraRepo(a.cfg)
-	jwtUtils := jwt.New(a.cfg.JWTSecret, convert.HourToDuration(a.cfg.JWTExpire))
-	passwordHasher := password_hasher.New(a.cfg.Salt)
+	cassandraRead, cassandraWrite := getCassandraRepo(a.cfg.cassandraConnectionConfigs)
+	jwtUtils := jwt.New(a.cfg.appConfigs.JWTSecret, convert.HourToDuration(a.cfg.appConfigs.JWTExpire))
+	passwordHasher := password_hasher.New(a.cfg.appConfigs.Salt)
 	kgs, err := newKGS(cassandraRead, cassandraWrite)
 	if err != nil {
 		return err
@@ -71,12 +71,11 @@ func (a *actions) run(c *cli.Context) error {
 		CassandraRead:  cassandraRead,
 		CassandraWrite: cassandraWrite,
 		KGS:            kgs,
-		BaseURL:        a.cfg.Address,
 	})
 
 	server := http.NewHttpServer(http.NewHttpServerOpts{
-		Port:     a.cfg.Port,
-		IsDev:    a.cfg.IsDev,
+		Port:     a.cfg.appConfigs.Port,
+		IsDev:    a.cfg.appConfigs.IsDev,
 		JwtUtils: jwtUtils,
 		Services: &ports.Services{
 			User: userService,

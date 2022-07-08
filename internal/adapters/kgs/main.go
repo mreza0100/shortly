@@ -2,6 +2,7 @@ package kgs
 
 import (
 	"math"
+	"sync"
 
 	"github.com/mreza0100/shortly/internal/ports"
 )
@@ -15,6 +16,7 @@ func New(opt InitKGSOptions) ports.KGS {
 	kgs := &kgs{
 		counter:     opt.LastSavedCounter,
 		saveCounter: opt.SaveCounter,
+		mu:          new(sync.Mutex),
 		seed:        make([]byte, 0, 62),
 	}
 	kgs.fillSeed()
@@ -23,9 +25,10 @@ func New(opt InitKGSOptions) ports.KGS {
 }
 
 type kgs struct {
+	saveCounter func(int64)
 	counter     int64
 	seed        []byte
-	saveCounter func(int64)
+	mu          *sync.Mutex
 }
 
 func (kgs *kgs) updateCounter() {
@@ -33,7 +36,7 @@ func (kgs *kgs) updateCounter() {
 
 	// TODO: a system to determine when to save the counter based on the number of keys generated and requests/secent
 	if kgs.counter%10 == 0 {
-		kgs.saveCounter(kgs.counter)
+		go kgs.saveCounter(kgs.counter)
 	}
 }
 
@@ -53,6 +56,7 @@ func (kgs *kgs) fillSeed() {
 
 func (kgs *kgs) GetKey() string {
 	key := make([]byte, 0, 10)
+	kgs.mu.Lock()
 
 	for c := float64(kgs.counter); c != 0; {
 		key = append(key, kgs.seed[int(c)%62])
@@ -60,5 +64,6 @@ func (kgs *kgs) GetKey() string {
 	}
 
 	kgs.updateCounter()
+	kgs.mu.Unlock()
 	return string(key)
 }
