@@ -13,24 +13,20 @@ type cassandraRead struct {
 }
 
 func (r *cassandraRead) GetUserByEmail(_ context.Context, email string) (*models.User, error) {
-	const cql = `SELECT * FROM users WHERE email = ? LIMIT 1`
-	iter := r.session.Query(cql, email).Iter()
-
-	users := make([]models.User, 0, 1)
+	const selectUserCQL = `SELECT * FROM users WHERE email = ? LIMIT 1`
+	iter := r.session.Query(selectUserCQL, email).Iter()
 
 	m := map[string]interface{}{}
-	for iter.MapScan(m) {
-		users = append(users, models.User{
-			Email:    m["email"].(string),
-			Password: m["password"].(string),
-		})
-		m = map[string]interface{}{}
+	if !iter.MapScan(m) {
+		return nil, er.GeneralFailure
 	}
 
-	if len(users) <= 0 {
-		return nil, er.NotFound
+	user := &models.User{
+		Email:    m["email"].(string),
+		Password: m["password"].(string),
 	}
-	return &users[0], nil
+
+	return user, nil
 }
 
 func (r *cassandraRead) GetDestinationByLink(_ context.Context, shortLink string) (string, error) {

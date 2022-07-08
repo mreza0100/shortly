@@ -40,6 +40,8 @@ func (u *userHandlers) signup() gin.HandlerFunc {
 			c.JSON(http.StatusBadRequest, ResponseBody{Error: err.Error()})
 			return
 		}
+		c.Status(http.StatusCreated)
+		c.Done()
 	}
 }
 
