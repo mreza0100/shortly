@@ -17,7 +17,7 @@ func (r *cassandraRead) GetUserByEmail(_ context.Context, email string) (*models
 
 	m := map[string]interface{}{}
 	if !iter.MapScan(m) {
-		return nil, er.GeneralFailure
+		return nil, er.NotFound
 	}
 
 	user := &models.User{

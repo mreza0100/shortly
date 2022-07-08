@@ -34,10 +34,9 @@ type user struct {
 }
 
 func (s *user) Signup(ctx context.Context, email, password string) error {
-	if user, err := s.cassandraRead.GetUserByEmail(ctx, email); err != nil {
+	_, err := s.cassandraRead.GetUserByEmail(ctx, email)
+	if err != nil && err != er.NotFound {
 		return err
-	} else if user != nil && err == nil {
-		return er.UsernameAlreadyExists
 	}
 
 	hashpass, err := s.passwordHasher.Hash(password)
