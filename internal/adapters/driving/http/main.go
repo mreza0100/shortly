@@ -4,7 +4,7 @@ import (
 	"fmt"
 
 	"github.com/gin-gonic/gin"
-	"github.com/mreza0100/shortly/internal/ports/services"
+	"github.com/mreza0100/shortly/internal/ports"
 	"github.com/mreza0100/shortly/pkg/jwt"
 )
 
@@ -12,7 +12,7 @@ type NewHttpServerOpts struct {
 	Port     string
 	IsDev    bool
 	JwtUtils jwt.JWTHelper
-	Services *services.Services
+	Services *ports.Services
 }
 
 func NewHttpServer(opts NewHttpServerOpts) *server {
@@ -20,7 +20,7 @@ func NewHttpServer(opts NewHttpServerOpts) *server {
 		port:     opts.Port,
 		isDev:    opts.IsDev,
 		jwtUtils: opts.JwtUtils,
-		services: opts.Services,
+		ports:    opts.Services,
 	}
 }
 
@@ -28,7 +28,7 @@ type server struct {
 	port      string
 	isDev     bool
 	ginClient *gin.Engine
-	services  *services.Services
+	ports     *ports.Services
 	jwtUtils  jwt.JWTHelper
 }
 
@@ -58,6 +58,6 @@ exit:
 }
 
 func (s *server) registerRoutes() {
-	registerUserRoutes(s.ginClient, s.services.User)
-	registerLinkRoutes(s.ginClient, s.jwtUtils, s.services.Link)
+	registerUserRoutes(s.ginClient, s.ports.User)
+	registerLinkRoutes(s.ginClient, s.jwtUtils, s.ports.Link)
 }

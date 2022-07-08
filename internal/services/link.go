@@ -4,20 +4,18 @@ import (
 	"context"
 	"net/url"
 
-	"github.com/mreza0100/shortly/internal/adapters/driven/kgs"
-	"github.com/mreza0100/shortly/internal/ports/driven"
-	"github.com/mreza0100/shortly/internal/ports/services"
+	"github.com/mreza0100/shortly/internal/ports"
 	er "github.com/mreza0100/shortly/pkg/errors"
 )
 
 type LinkServiceOptions struct {
-	CassandraRead  driven.CassandraReadPort
-	CassandraWrite driven.CassandraWritePort
-	KGS            kgs.KGS
+	CassandraRead  ports.CassandraReadPort
+	CassandraWrite ports.CassandraWritePort
+	KGS            ports.KGS
 	BaseURL        string
 }
 
-func NewLinkService(opt LinkServiceOptions) services.LinkServicePort {
+func NewLinkService(opt LinkServiceOptions) ports.LinkServicePort {
 	return &link{
 		cassandraRead:  opt.CassandraRead,
 		cassandraWrite: opt.CassandraWrite,
@@ -27,9 +25,9 @@ func NewLinkService(opt LinkServiceOptions) services.LinkServicePort {
 }
 
 type link struct {
-	cassandraRead  driven.CassandraReadPort
-	cassandraWrite driven.CassandraWritePort
-	KGS            kgs.KGS
+	cassandraRead  ports.CassandraReadPort
+	cassandraWrite ports.CassandraWritePort
+	KGS            ports.KGS
 	baseURL        string
 }
 

@@ -7,8 +7,7 @@ import (
 	cassandra_repo "github.com/mreza0100/shortly/internal/adapters/driven/cassandra"
 	"github.com/mreza0100/shortly/internal/adapters/driven/kgs"
 	http "github.com/mreza0100/shortly/internal/adapters/driving/http"
-	"github.com/mreza0100/shortly/internal/ports/driven"
-	services_ports "github.com/mreza0100/shortly/internal/ports/services"
+	"github.com/mreza0100/shortly/internal/ports"
 	"github.com/mreza0100/shortly/internal/services"
 	cassandra_connection "github.com/mreza0100/shortly/pkg/connection/cassandra"
 	"github.com/mreza0100/shortly/pkg/convert"
@@ -17,7 +16,7 @@ import (
 	"github.com/urfave/cli"
 )
 
-func getCassandraRepo(cfg *Configs) (driven.CassandraReadPort, driven.CassandraWritePort) {
+func getCassandraRepo(cfg *Configs) (ports.CassandraReadPort, ports.CassandraWritePort) {
 	session, err := cassandra_connection.CreateConnection(&cassandra_connection.ConnectionConfigs{
 		Host:     cfg.Cassandra.Host,
 		Port:     cfg.Cassandra.Port,
@@ -35,7 +34,7 @@ func getCassandraRepo(cfg *Configs) (driven.CassandraReadPort, driven.CassandraW
 	return cassandraRead, cassandraWrite
 }
 
-func newKGS(cassandraRead driven.CassandraReadPort, cassandraWrite driven.CassandraWritePort) (kgs.KGS, error) {
+func newKGS(cassandraRead ports.CassandraReadPort, cassandraWrite ports.CassandraWritePort) (ports.KGS, error) {
 	counter, err := cassandraRead.GetCounter(context.Background())
 	if err != nil {
 		return nil, err
@@ -79,7 +78,7 @@ func (a *actions) run(c *cli.Context) error {
 		Port:     a.cfg.Port,
 		IsDev:    a.cfg.IsDev,
 		JwtUtils: jwtUtils,
-		Services: &services_ports.Services{
+		Services: &ports.Services{
 			User: userService,
 			Link: linkService,
 		},

@@ -5,13 +5,13 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/mreza0100/shortly/internal/adapters/driving/http/middleware"
-	"github.com/mreza0100/shortly/internal/ports/services"
+	"github.com/mreza0100/shortly/internal/ports"
 	"github.com/mreza0100/shortly/pkg/jwt"
 )
 
 const linkParamKey = "link"
 
-func registerLinkRoutes(ginClient *gin.Engine, jwtUtils jwt.JWTHelper, linkService services.LinkServicePort) {
+func registerLinkRoutes(ginClient *gin.Engine, jwtUtils jwt.JWTHelper, linkService ports.LinkServicePort) {
 	linkHandlers := &linkHandlers{linkService: linkService}
 
 	ginClient.GET("/:"+linkParamKey, linkHandlers.redirectByLink())
@@ -21,7 +21,7 @@ func registerLinkRoutes(ginClient *gin.Engine, jwtUtils jwt.JWTHelper, linkServi
 }
 
 type linkHandlers struct {
-	linkService services.LinkServicePort
+	linkService ports.LinkServicePort
 }
 
 func (u *linkHandlers) newLink() gin.HandlerFunc {

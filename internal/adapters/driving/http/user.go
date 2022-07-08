@@ -4,10 +4,10 @@ import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
-	"github.com/mreza0100/shortly/internal/ports/services"
+	"github.com/mreza0100/shortly/internal/ports"
 )
 
-func registerUserRoutes(ginClient *gin.Engine, userService services.UserServicePort) {
+func registerUserRoutes(ginClient *gin.Engine, userService ports.UserServicePort) {
 	userHandlers := &userHandlers{userService: userService}
 	group := ginClient.Group("/user")
 
@@ -16,7 +16,7 @@ func registerUserRoutes(ginClient *gin.Engine, userService services.UserServiceP
 }
 
 type userHandlers struct {
-	userService services.UserServicePort
+	userService ports.UserServicePort
 }
 
 func (u *userHandlers) signup() gin.HandlerFunc {

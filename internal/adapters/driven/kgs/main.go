@@ -2,6 +2,8 @@ package kgs
 
 import (
 	"math"
+
+	"github.com/mreza0100/shortly/internal/ports"
 )
 
 type InitKGSOptions struct {
@@ -9,7 +11,7 @@ type InitKGSOptions struct {
 	LastModifiedCounter int64
 }
 
-func New(opt InitKGSOptions) *kgs {
+func New(opt InitKGSOptions) ports.KGS {
 	kgs := &kgs{
 		counter:     opt.LastModifiedCounter,
 		saveCounter: opt.SaveCounter,
@@ -18,10 +20,6 @@ func New(opt InitKGSOptions) *kgs {
 	kgs.fillSeed()
 
 	return kgs
-}
-
-type KGS interface {
-	GetKey() string
 }
 
 type kgs struct {

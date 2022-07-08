@@ -4,21 +4,20 @@ import (
 	"context"
 
 	"github.com/mreza0100/shortly/internal/models"
-	"github.com/mreza0100/shortly/internal/ports/driven"
-	"github.com/mreza0100/shortly/internal/ports/services"
+	"github.com/mreza0100/shortly/internal/ports"
 	er "github.com/mreza0100/shortly/pkg/errors"
 	"github.com/mreza0100/shortly/pkg/jwt"
-	passwordhasher "github.com/mreza0100/shortly/pkg/password"
+	password_hasher "github.com/mreza0100/shortly/pkg/password"
 )
 
 type UserServiceOptions struct {
-	CassandraRead  driven.CassandraReadPort
-	CassandraWrite driven.CassandraWritePort
-	PasswordHasher passwordhasher.PasswordHasher
+	CassandraRead  ports.CassandraReadPort
+	CassandraWrite ports.CassandraWritePort
+	PasswordHasher password_hasher.PasswordHasher
 	JwtUtils       jwt.JWTHelper
 }
 
-func NewUserService(opt UserServiceOptions) services.UserServicePort {
+func NewUserService(opt UserServiceOptions) ports.UserServicePort {
 	return &user{
 		cassandraRead:  opt.CassandraRead,
 		cassandraWrite: opt.CassandraWrite,
@@ -28,9 +27,9 @@ func NewUserService(opt UserServiceOptions) services.UserServicePort {
 }
 
 type user struct {
-	cassandraRead  driven.CassandraReadPort
-	cassandraWrite driven.CassandraWritePort
-	passwordHasher passwordhasher.PasswordHasher
+	cassandraRead  ports.CassandraReadPort
+	cassandraWrite ports.CassandraWritePort
+	passwordHasher password_hasher.PasswordHasher
 	jwtUtils       jwt.JWTHelper
 }
 
