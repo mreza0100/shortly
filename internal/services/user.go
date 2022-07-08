@@ -15,7 +15,7 @@ type UserServiceOptions struct {
 	CassandraRead  driven.CassandraReadPort
 	CassandraWrite driven.CassandraWritePort
 	PasswordHasher passwordhasher.PasswordHasher
-	JwtUtil        jwt.JWTHelper
+	JwtUtils       jwt.JWTHelper
 }
 
 func NewUserService(opt UserServiceOptions) services.UserServicePort {
@@ -23,7 +23,7 @@ func NewUserService(opt UserServiceOptions) services.UserServicePort {
 		cassandraRead:  opt.CassandraRead,
 		cassandraWrite: opt.CassandraWrite,
 		passwordHasher: opt.PasswordHasher,
-		jwtUtil:        opt.JwtUtil,
+		jwtUtils:       opt.JwtUtils,
 	}
 }
 
@@ -31,7 +31,7 @@ type user struct {
 	cassandraRead  driven.CassandraReadPort
 	cassandraWrite driven.CassandraWritePort
 	passwordHasher passwordhasher.PasswordHasher
-	jwtUtil        jwt.JWTHelper
+	jwtUtils       jwt.JWTHelper
 }
 
 func (s *user) Signup(ctx context.Context, email, password string) error {
@@ -66,5 +66,5 @@ func (s *user) Signin(ctx context.Context, email, password string) (string, erro
 		return "", er.InvalidEmailOrPassword
 	}
 
-	return s.jwtUtil.CreateToken(user.Email)
+	return s.jwtUtils.CreateToken(user.Email)
 }

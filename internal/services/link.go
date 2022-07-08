@@ -2,10 +2,12 @@ package services
 
 import (
 	"context"
+	"net/url"
 
 	"github.com/mreza0100/shortly/internal/adapters/driven/kgs"
 	"github.com/mreza0100/shortly/internal/ports/driven"
 	"github.com/mreza0100/shortly/internal/ports/services"
+	er "github.com/mreza0100/shortly/pkg/errors"
 )
 
 type LinkServiceOptions struct {
@@ -31,10 +33,18 @@ type link struct {
 	baseURL        string
 }
 
-func (l *link) NewLink(ctx context.Context, link, userEmail string) (string, error) {
+func (l *link) NewLink(ctx context.Context, destination, userEmail string) (string, error) {
 	shortURL := l.KGS.GetKey()
 
-	err := l.cassandraWrite.SaveLink(ctx, shortURL, link, userEmail)
+	parsedURL, err := url.Parse(destination)
+	if err != nil {
+		return "", er.URLNotValid
+	}
+	if parsedURL.Scheme == "" {
+		parsedURL.Scheme = "http"
+	}
+
+	err = l.cassandraWrite.SaveLink(ctx, shortURL, parsedURL.String(), userEmail)
 
 	return shortURL, err
 }

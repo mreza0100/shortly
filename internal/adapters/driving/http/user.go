@@ -1,6 +1,8 @@
 package http
 
 import (
+	"net/http"
+
 	"github.com/gin-gonic/gin"
 	"github.com/mreza0100/shortly/internal/ports/services"
 )
@@ -29,13 +31,13 @@ func (u *userHandlers) signup() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		var requestBody RequestBody
 		if err := c.ShouldBindJSON(&requestBody); err != nil {
-			c.JSON(400, ResponseBody{Error: err.Error()})
+			c.JSON(http.StatusBadRequest, ResponseBody{Error: err.Error()})
 			return
 		}
 
 		err := u.userService.Signup(c.Request.Context(), requestBody.Email, requestBody.Password)
 		if err != nil {
-			c.JSON(400, ResponseBody{Error: err.Error()})
+			c.JSON(http.StatusBadRequest, ResponseBody{Error: err.Error()})
 			return
 		}
 	}
@@ -54,16 +56,16 @@ func (u *userHandlers) signin() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		var requestBody RequestBody
 		if err := c.ShouldBindJSON(&requestBody); err != nil {
-			c.JSON(400, ResponseBody{Error: err.Error()})
+			c.JSON(http.StatusBadRequest, ResponseBody{Error: err.Error()})
 			return
 		}
 
 		token, err := u.userService.Signin(c.Request.Context(), requestBody.Email, requestBody.Password)
 		if err != nil {
-			c.JSON(400, ResponseBody{Error: err.Error()})
+			c.JSON(http.StatusBadRequest, ResponseBody{Error: err.Error()})
 			return
 		}
 
-		c.JSON(200, ResponseBody{Token: token})
+		c.JSON(http.StatusOK, ResponseBody{Token: token})
 	}
 }

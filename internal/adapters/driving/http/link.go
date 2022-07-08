@@ -2,7 +2,6 @@ package http
 
 import (
 	"net/http"
-	"strings"
 
 	"github.com/gin-gonic/gin"
 	"github.com/mreza0100/shortly/internal/adapters/driving/http/middleware"
@@ -33,20 +32,21 @@ func (u *linkHandlers) newLink() gin.HandlerFunc {
 		Short string `json:"short"`
 		Error string `json:"error"`
 	}
+
 	return func(c *gin.Context) {
 		var requestBody RequestBody
 		if err := c.ShouldBindJSON(&requestBody); err != nil {
-			c.JSON(400, ResponseBody{Error: err.Error()})
+			c.JSON(http.StatusBadRequest, ResponseBody{Error: err.Error()})
 			return
 		}
 
 		short, err := u.linkService.NewLink(c.Request.Context(), requestBody.Link, "")
 		if err != nil {
-			c.JSON(400, ResponseBody{Error: err.Error()})
+			c.JSON(http.StatusBadRequest, ResponseBody{Error: err.Error()})
 			return
 		}
 
-		c.JSON(200, ResponseBody{Short: short})
+		c.JSON(http.StatusCreated, ResponseBody{Short: short})
 	}
 }
 
@@ -54,17 +54,13 @@ func (u *linkHandlers) redirectByLink() gin.HandlerFunc {
 	type ResponseBody struct {
 		Error string `json:"error"`
 	}
+
 	return func(c *gin.Context) {
 		shortLink := c.Param(linkParamKey)
 		destination, err := u.linkService.GetDestinationByLink(c.Request.Context(), shortLink)
 		if err != nil {
-			c.JSON(400, ResponseBody{Error: err.Error()})
+			c.JSON(http.StatusBadRequest, ResponseBody{Error: err.Error()})
 			return
-		}
-
-		// check if the destination have http:// or https://
-		if !strings.HasPrefix(destination, "http://") && !strings.HasPrefix(destination, "https://") {
-			destination = "http://" + destination
 		}
 
 		c.Redirect(http.StatusMovedPermanently, destination)

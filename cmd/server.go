@@ -65,7 +65,7 @@ func (a *actions) run(c *cli.Context) error {
 	userService := services.NewUserService(services.UserServiceOptions{
 		CassandraRead:  cassandraRead,
 		CassandraWrite: cassandraWrite,
-		JwtUtil:        jwtUtils,
+		JwtUtils:       jwtUtils,
 		PasswordHasher: passwordHasher,
 	})
 	linkService := services.NewLinkService(services.LinkServiceOptions{
