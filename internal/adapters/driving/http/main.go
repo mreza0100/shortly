@@ -33,8 +33,14 @@ type server struct {
 }
 
 func (s *server) ListenAndServe() <-chan error {
+	errCh := make(chan error)
 	s.ginClient = gin.Default()
 	s.registerRoutes()
+
+	if err := s.ginClient.SetTrustedProxies(nil); err != nil {
+		go func(errCh chan error) { errCh <- err }(errCh)
+		goto exit
+	}
 
 	if s.isDev {
 		gin.SetMode(gin.DebugMode)
@@ -42,12 +48,12 @@ func (s *server) ListenAndServe() <-chan error {
 		gin.SetMode(gin.ReleaseMode)
 	}
 
-	errCh := make(chan error)
 	go func(errCh chan error) {
 		addr := fmt.Sprint(":", s.port)
 		errCh <- s.ginClient.Run(addr)
 	}(errCh)
 
+exit:
 	return errCh
 }
 
