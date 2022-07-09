@@ -89,6 +89,7 @@ func (s *seed) createLink(userEmail string) error {
 	link := s.getRandomLink(10)
 	ctx := context.Background()
 
+	log.Printf("Creating link %s for user %s", link, userEmail)
 	if _, err := s.services.Link.NewLink(ctx, link, userEmail); err != nil {
 		return err
 	}
