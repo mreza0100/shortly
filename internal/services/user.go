@@ -2,6 +2,7 @@ package services
 
 import (
 	"context"
+	"net/mail"
 
 	"github.com/mreza0100/shortly/internal/models"
 	"github.com/mreza0100/shortly/internal/ports"
@@ -34,9 +35,17 @@ type user struct {
 }
 
 func (s *user) Signup(ctx context.Context, email, password string) error {
+	if _, err := mail.ParseAddress(email); err != nil {
+		return er.EmailNotValid
+	}
+
 	_, err := s.cassandraRead.GetUserByEmail(ctx, email)
-	if err != nil && err != er.NotFound {
-		return err
+	if err != nil {
+		if err != er.NotFound {
+			return er.GeneralFailure
+		}
+	} else {
+		return er.EmailAlreadyExists
 	}
 
 	hashpass, err := s.passwordHasher.Hash(password)
