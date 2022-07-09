@@ -2,6 +2,7 @@ package cassandrarepo
 
 import (
 	"context"
+	"time"
 
 	"github.com/gocql/gocql"
 	"github.com/mreza0100/shortly/internal/models"
@@ -29,23 +30,23 @@ func (r *cassandraRead) GetUserByEmail(_ context.Context, email string) (*models
 	return user, nil
 }
 
-func (r *cassandraRead) GetDestinationByLink(_ context.Context, shortLink string) (string, error) {
-	query := r.session.Query(`SELECT destination FROM links WHERE short = ? LIMIT 1`, shortLink)
-	if err := query.Exec(); err != nil {
-		return "", err
-	}
-	iter := query.Iter()
+func (r *cassandraRead) GetLinkByShort(_ context.Context, short string) (*models.Link, error) {
+	iter := r.session.Query(`SELECT * FROM links WHERE short = ? LIMIT 1`, short).Iter()
 	defer iter.Close()
 
-	var destination string
-	if !iter.Scan(&destination) {
-		return "", er.NotFound
+	m := map[string]interface{}{}
+	if !iter.MapScan(m) {
+		return nil, er.NotFound
 	}
 
-	if destination == "" {
-		return "", er.NotFound
+	link := &models.Link{
+		Short:       m["short"].(string),
+		Destination: m["destination"].(string),
+		UserEmail:   m["user_email"].(string),
+		CreatedAt:   m["created_at"].(time.Time),
 	}
-	return destination, nil
+
+	return link, nil
 }
 
 func (r *cassandraRead) GetCounter(_ context.Context) (int64, error) {

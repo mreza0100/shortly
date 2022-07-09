@@ -7,7 +7,7 @@ import (
 )
 
 type HealthServiceOptions struct {
-	CassandraRead ports.CassandraReadPort
+	CassandraRead ports.StorageReadPort
 }
 
 func NewHealthService(opt *HealthServiceOptions) ports.HealthServicePort {
@@ -17,7 +17,7 @@ func NewHealthService(opt *HealthServiceOptions) ports.HealthServicePort {
 }
 
 type health struct {
-	CassandraRead ports.CassandraReadPort
+	CassandraRead ports.StorageReadPort
 }
 
 func (h *health) CheckHealth(ctx context.Context) bool {

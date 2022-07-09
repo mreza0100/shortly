@@ -6,7 +6,7 @@ import (
 	"github.com/mreza0100/shortly/internal/ports"
 )
 
-func NewCassandraRepository(session *gocql.Session) (ports.CassandraReadPort, ports.CassandraWritePort, error) {
+func NewCassandraRepository(session *gocql.Session) (ports.StorageReadPort, ports.StorageWritePort, error) {
 	if err := migrate.MigrateCassandra(session); err != nil {
 		return nil, nil, err
 	}

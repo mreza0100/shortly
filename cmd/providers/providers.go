@@ -11,7 +11,7 @@ import (
 	"github.com/mreza0100/shortly/internal/ports"
 )
 
-func CassandraRepositoryProvider(cfg *CassandraConnectionConfigs) (ports.CassandraReadPort, ports.CassandraWritePort) {
+func CassandraRepositoryProvider(cfg *CassandraConnectionConfigs) (ports.StorageReadPort, ports.StorageWritePort) {
 	session, err := cassandra_connection.CreateConnection(&cassandra_connection.ConnectionConfigs{
 		Host:     cfg.Host,
 		Port:     cfg.Port,
@@ -29,7 +29,7 @@ func CassandraRepositoryProvider(cfg *CassandraConnectionConfigs) (ports.Cassand
 	return cassandraRead, cassandraWrite
 }
 
-func KGSProvider(cassandraRead ports.CassandraReadPort, cassandraWrite ports.CassandraWritePort) (ports.KGS, error) {
+func KGSProvider(cassandraRead ports.StorageReadPort, cassandraWrite ports.StorageWritePort) (ports.KGS, error) {
 	counter, err := cassandraRead.GetCounter(context.Background())
 	if err != nil {
 		return nil, err

@@ -11,8 +11,8 @@ import (
 )
 
 type LinkServiceOptions struct {
-	CassandraRead  ports.CassandraReadPort
-	CassandraWrite ports.CassandraWritePort
+	CassandraRead  ports.StorageReadPort
+	CassandraWrite ports.StorageWritePort
 	KGS            ports.KGS
 }
 
@@ -26,8 +26,8 @@ func NewLinkService(opt *LinkServiceOptions) ports.LinkServicePort {
 }
 
 type link struct {
-	cassandraRead  ports.CassandraReadPort
-	cassandraWrite ports.CassandraWritePort
+	cassandraRead  ports.StorageReadPort
+	cassandraWrite ports.StorageWritePort
 	KGS            ports.KGS
 	errLogger      *log.Logger
 }
@@ -52,15 +52,15 @@ func (l *link) NewLink(ctx context.Context, destination, userEmail string) (stri
 	return shortURL, nil
 }
 
-func (l *link) GetDestinationByLink(ctx context.Context, link string) (string, error) {
-	destination, err := l.cassandraRead.GetDestinationByLink(ctx, link)
+func (l *link) GetDestinationByLink(ctx context.Context, short string) (string, error) {
+	link, err := l.cassandraRead.GetLinkByShort(ctx, short)
 	if err != nil {
 		if err == er.NotFound {
 			return "", err
 		}
-		l.errLogger.Printf("Error getting destination by link: %e", err)
+		l.errLogger.Printf("Error getting link by link: %e", err)
 		return "", er.GeneralFailure
 	}
 
-	return destination, nil
+	return link.Destination, nil
 }

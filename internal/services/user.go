@@ -14,8 +14,8 @@ import (
 )
 
 type UserServiceOptions struct {
-	CassandraRead  ports.CassandraReadPort
-	CassandraWrite ports.CassandraWritePort
+	CassandraRead  ports.StorageReadPort
+	CassandraWrite ports.StorageWritePort
 	PasswordHasher password_hasher.PasswordHasher
 	JwtUtils       jwt.JWTHelper
 }
@@ -31,8 +31,8 @@ func NewUserService(opt *UserServiceOptions) ports.UserServicePort {
 }
 
 type user struct {
-	cassandraRead  ports.CassandraReadPort
-	cassandraWrite ports.CassandraWritePort
+	cassandraRead  ports.StorageReadPort
+	cassandraWrite ports.StorageWritePort
 	passwordHasher password_hasher.PasswordHasher
 	jwtUtils       jwt.JWTHelper
 	errLogger      *log.Logger
