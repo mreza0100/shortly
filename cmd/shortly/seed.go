@@ -1,6 +1,7 @@
 package main
 
 import (
+	"github.com/mreza0100/shortly/cmd/providers"
 	"github.com/mreza0100/shortly/internal/adapters/seed"
 	"github.com/mreza0100/shortly/internal/pkg/jwt"
 	"github.com/mreza0100/shortly/internal/ports"
@@ -11,10 +12,10 @@ import (
 )
 
 func (a *actions) seed(c *cli.Context) error {
-	cassandraRead, cassandraWrite := getCassandraRepo(a.cfg.cassandraConnectionConfigs)
-	jwtUtils := jwt.New(a.cfg.appConfigs.JWTSecret, convert.HourToDuration(a.cfg.appConfigs.JWTExpire))
-	passwordHasher := password_hasher.New(a.cfg.appConfigs.Salt)
-	kgs, err := newKGS(cassandraRead, cassandraWrite)
+	cassandraRead, cassandraWrite := providers.GetCassandraRepo(a.cfg.CassandraConnectionConfigs)
+	jwtUtils := jwt.New(a.cfg.AppConfigs.JWTSecret, convert.HourToDuration(a.cfg.AppConfigs.JWTExpire))
+	passwordHasher := password_hasher.New(a.cfg.AppConfigs.Salt)
+	kgs, err := providers.NewKGS(cassandraRead, cassandraWrite)
 	if err != nil {
 		return err
 	}

@@ -1,4 +1,4 @@
-package main
+package providers
 
 import (
 	"fmt"
@@ -8,7 +8,7 @@ import (
 	"github.com/spf13/viper"
 )
 
-type appConfigs struct {
+type AppConfigs struct {
 	Port               string `mapstructure:"app_port"`
 	IsDev              bool   `mapstructure:"is_dev"`
 	JWTSecret          string `mapstructure:"jwt_secret"`
@@ -17,23 +17,23 @@ type appConfigs struct {
 	HealthCheckTimeout int    `mapstructure:"health_check_timeout"`
 }
 
-type cassandraConnectionConfigs struct {
+type CassandraConnectionConfigs struct {
 	Host     string `mapstructure:"cassandra_host"`
 	Port     int    `mapstructure:"cassandra_port"`
 	Keyspace string `mapstructure:"cassandra_keyspace"`
 }
 
-type configs struct {
-	appConfigs                 *appConfigs
-	cassandraConnectionConfigs *cassandraConnectionConfigs
+type Configs struct {
+	AppConfigs                 *AppConfigs
+	CassandraConnectionConfigs *CassandraConnectionConfigs
 }
 
-func loadConfigs() *configs {
+func LoadConfigs() *Configs {
 	v := viper.New()
 
 	var result map[string]interface{}
-	var appConfig appConfigs
-	var cassandraConfigs cassandraConnectionConfigs
+	var appConfig AppConfigs
+	var cassandraConfigs CassandraConnectionConfigs
 	v.AddConfigPath(".")
 	v.SetConfigName(".env")
 	v.SetConfigType("env")
@@ -52,8 +52,8 @@ func loadConfigs() *configs {
 		log.Fatal(err)
 	}
 
-	return &configs{
-		appConfigs:                 &appConfig,
-		cassandraConnectionConfigs: &cassandraConfigs,
+	return &Configs{
+		AppConfigs:                 &appConfig,
+		CassandraConnectionConfigs: &cassandraConfigs,
 	}
 }

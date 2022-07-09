@@ -1,4 +1,4 @@
-package main
+package providers
 
 import (
 	"context"
@@ -11,7 +11,7 @@ import (
 	"github.com/mreza0100/shortly/internal/ports"
 )
 
-func getCassandraRepo(cfg *cassandraConnectionConfigs) (ports.CassandraReadPort, ports.CassandraWritePort) {
+func GetCassandraRepo(cfg *CassandraConnectionConfigs) (ports.CassandraReadPort, ports.CassandraWritePort) {
 	session, err := cassandra_connection.CreateConnection(&cassandra_connection.ConnectionConfigs{
 		Host:     cfg.Host,
 		Port:     cfg.Port,
@@ -29,7 +29,7 @@ func getCassandraRepo(cfg *cassandraConnectionConfigs) (ports.CassandraReadPort,
 	return cassandraRead, cassandraWrite
 }
 
-func newKGS(cassandraRead ports.CassandraReadPort, cassandraWrite ports.CassandraWritePort) (ports.KGS, error) {
+func NewKGS(cassandraRead ports.CassandraReadPort, cassandraWrite ports.CassandraWritePort) (ports.KGS, error) {
 	counter, err := cassandraRead.GetCounter(context.Background())
 	if err != nil {
 		return nil, err

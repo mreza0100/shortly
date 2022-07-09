@@ -1,6 +1,7 @@
 package main
 
 import (
+	"github.com/mreza0100/shortly/cmd/providers"
 	http "github.com/mreza0100/shortly/internal/adapters/http"
 	"github.com/mreza0100/shortly/internal/pkg/jwt"
 	"github.com/mreza0100/shortly/internal/ports"
@@ -11,10 +12,10 @@ import (
 )
 
 func (a *actions) run(c *cli.Context) error {
-	cassandraRead, cassandraWrite := getCassandraRepo(a.cfg.cassandraConnectionConfigs)
-	jwtUtils := jwt.New(a.cfg.appConfigs.JWTSecret, convert.HourToDuration(a.cfg.appConfigs.JWTExpire))
-	passwordHasher := password_hasher.New(a.cfg.appConfigs.Salt)
-	kgs, err := newKGS(cassandraRead, cassandraWrite)
+	cassandraRead, cassandraWrite := providers.GetCassandraRepo(a.cfg.CassandraConnectionConfigs)
+	jwtUtils := jwt.New(a.cfg.AppConfigs.JWTSecret, convert.HourToDuration(a.cfg.AppConfigs.JWTExpire))
+	passwordHasher := password_hasher.New(a.cfg.AppConfigs.Salt)
+	kgs, err := providers.NewKGS(cassandraRead, cassandraWrite)
 	if err != nil {
 		return err
 	}
@@ -32,8 +33,8 @@ func (a *actions) run(c *cli.Context) error {
 	})
 
 	server := http.NewHttpServer(http.NewHttpServerOpts{
-		Port:     a.cfg.appConfigs.Port,
-		IsDev:    a.cfg.appConfigs.IsDev,
+		Port:     a.cfg.AppConfigs.Port,
+		IsDev:    a.cfg.AppConfigs.IsDev,
 		JwtUtils: jwtUtils,
 		Services: &ports.Services{
 			User: userService,

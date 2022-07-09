@@ -4,17 +4,18 @@ import (
 	"log"
 	"os"
 
+	"github.com/mreza0100/shortly/cmd/providers"
 	"github.com/urfave/cli"
 )
 
 type actions struct {
-	cfg *configs
+	cfg *providers.Configs
 }
 
 func main() {
 	app := cli.NewApp()
 	actions := new(actions)
-	actions.cfg = loadConfigs()
+	actions.cfg = providers.LoadConfigs()
 
 	app.Commands = []cli.Command{
 		{
