@@ -16,7 +16,7 @@ type LinkServiceOptions struct {
 	KGS            ports.KGS
 }
 
-func NewLinkService(opt LinkServiceOptions) ports.LinkServicePort {
+func NewLinkService(opt *LinkServiceOptions) ports.LinkServicePort {
 	return &link{
 		cassandraRead:  opt.CassandraRead,
 		cassandraWrite: opt.CassandraWrite,

@@ -20,7 +20,7 @@ type UserServiceOptions struct {
 	JwtUtils       jwt.JWTHelper
 }
 
-func NewUserService(opt UserServiceOptions) ports.UserServicePort {
+func NewUserService(opt *UserServiceOptions) ports.UserServicePort {
 	return &user{
 		cassandraRead:  opt.CassandraRead,
 		cassandraWrite: opt.CassandraWrite,

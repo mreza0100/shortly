@@ -6,9 +6,13 @@ import (
 	"github.com/mreza0100/shortly/internal/ports"
 )
 
-func NewHealthService(cassandraRead ports.CassandraReadPort) ports.HealthServicePort {
+type HealthServiceOptions struct {
+	CassandraRead ports.CassandraReadPort
+}
+
+func NewHealthService(opt *HealthServiceOptions) ports.HealthServicePort {
 	return &health{
-		CassandraRead: cassandraRead,
+		CassandraRead: opt.CassandraRead,
 	}
 }
 

@@ -12,7 +12,9 @@ import (
 func (a *actions) healthCheck(c *cli.Context) error {
 	cassandraRead, _ := providers.GetCassandraRepo(a.cfg.CassandraConnectionConfigs)
 
-	healthService := services.NewHealthService(cassandraRead)
+	healthService := services.NewHealthService(&services.HealthServiceOptions{
+		CassandraRead: cassandraRead,
+	})
 
 	timeout := time.Duration(a.cfg.AppConfigs.HealthCheckTimeout) * time.Second
 	ctx, cancel := context.WithTimeout(context.Background(), timeout)

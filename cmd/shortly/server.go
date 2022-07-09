@@ -15,21 +15,25 @@ func (a *actions) run(c *cli.Context) error {
 	cassandraRead, cassandraWrite := providers.GetCassandraRepo(a.cfg.CassandraConnectionConfigs)
 	jwtUtils := jwt.New(a.cfg.AppConfigs.JWTSecret, convert.HourToDuration(a.cfg.AppConfigs.JWTExpire))
 	passwordHasher := password_hasher.New(a.cfg.AppConfigs.Salt)
+
 	kgs, err := providers.NewKGS(cassandraRead, cassandraWrite)
 	if err != nil {
 		return err
 	}
 
-	userService := services.NewUserService(services.UserServiceOptions{
+	userService := services.NewUserService(&services.UserServiceOptions{
 		CassandraRead:  cassandraRead,
 		CassandraWrite: cassandraWrite,
 		JwtUtils:       jwtUtils,
 		PasswordHasher: passwordHasher,
 	})
-	linkService := services.NewLinkService(services.LinkServiceOptions{
+	linkService := services.NewLinkService(&services.LinkServiceOptions{
 		CassandraRead:  cassandraRead,
 		CassandraWrite: cassandraWrite,
 		KGS:            kgs,
+	})
+	healthService := services.NewHealthService(&services.HealthServiceOptions{
+		CassandraRead: cassandraRead,
 	})
 
 	server := http.NewHttpServer(http.NewHttpServerOpts{
@@ -37,8 +41,9 @@ func (a *actions) run(c *cli.Context) error {
 		IsDev:    a.cfg.AppConfigs.IsDev,
 		JwtUtils: jwtUtils,
 		Services: &ports.Services{
-			User: userService,
-			Link: linkService,
+			User:   userService,
+			Link:   linkService,
+			Health: healthService,
 		},
 	})
 

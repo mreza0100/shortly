@@ -3,8 +3,9 @@ package ports
 import "context"
 
 type Services struct {
-	User UserServicePort
-	Link LinkServicePort
+	User   UserServicePort
+	Link   LinkServicePort
+	Health HealthServicePort
 }
 
 type HealthServicePort interface {

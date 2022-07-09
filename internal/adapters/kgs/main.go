@@ -1,3 +1,4 @@
+// KGS stands for Key Generator Service
 package kgs
 
 import (
