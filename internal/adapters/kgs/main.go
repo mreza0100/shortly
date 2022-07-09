@@ -12,7 +12,7 @@ type InitKGSOptions struct {
 	LastSavedCounter int64
 }
 
-func New(opt InitKGSOptions) ports.KGS {
+func New(opt *InitKGSOptions) ports.KGS {
 	kgs := &kgs{
 		counter:     opt.LastSavedCounter,
 		saveCounter: opt.SaveCounter,
