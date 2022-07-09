@@ -9,11 +9,12 @@ import (
 )
 
 type appConfigs struct {
-	Port      string `mapstructure:"app_port"`
-	IsDev     bool   `mapstructure:"is_dev"`
-	JWTSecret string `mapstructure:"jwt_secret"`
-	JWTExpire int    `mapstructure:"jwt_expire_hour"`
-	Salt      string `mapstructure:"salt"`
+	Port               string `mapstructure:"app_port"`
+	IsDev              bool   `mapstructure:"is_dev"`
+	JWTSecret          string `mapstructure:"jwt_secret"`
+	JWTExpire          int    `mapstructure:"jwt_expire_hour"`
+	Salt               string `mapstructure:"salt"`
+	HealthCheckTimeout int    `mapstructure:"health_check_timeout"`
 }
 
 type cassandraConnectionConfigs struct {

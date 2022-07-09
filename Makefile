@@ -38,6 +38,9 @@ destroy:
 	# Removing container
 	docker-compose rm -f
 
+health-check:
+	go run ./cmd health
+
 test:
 	# Running test
 	go test -v ./...

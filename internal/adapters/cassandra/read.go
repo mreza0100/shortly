@@ -63,3 +63,19 @@ func (r *cassandraRead) GetCounter(_ context.Context) (int64, error) {
 
 	return counter, nil
 }
+
+func (r *cassandraRead) HealthCheck(_ context.Context) bool {
+	query := r.session.Query(`SELECT now() FROM system.local`)
+	if err := query.Exec(); err != nil {
+		return false
+	}
+	iter := query.Iter()
+	defer iter.Close()
+
+	var now string
+	if !iter.Scan(&now) {
+		return false
+	}
+
+	return now != ""
+}

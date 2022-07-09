@@ -27,6 +27,11 @@ func main() {
 			Aliases: []string{"seed"},
 			Usage:   "seed the database",
 			Action:  actions.seed,
+		}, {
+			Name:    "health check",
+			Aliases: []string{"health"},
+			Usage:   "check the health of the server",
+			Action:  actions.healthCheck,
 		},
 	}
 

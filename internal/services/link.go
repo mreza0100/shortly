@@ -14,7 +14,6 @@ type LinkServiceOptions struct {
 	CassandraRead  ports.CassandraReadPort
 	CassandraWrite ports.CassandraWritePort
 	KGS            ports.KGS
-	BaseURL        string
 }
 
 func NewLinkService(opt LinkServiceOptions) ports.LinkServicePort {
@@ -22,7 +21,6 @@ func NewLinkService(opt LinkServiceOptions) ports.LinkServicePort {
 		cassandraRead:  opt.CassandraRead,
 		cassandraWrite: opt.CassandraWrite,
 		KGS:            opt.KGS,
-		baseURL:        opt.BaseURL,
 		errLogger:      log.New(os.Stderr, "UserService: ", log.LstdFlags),
 	}
 }
@@ -31,7 +29,6 @@ type link struct {
 	cassandraRead  ports.CassandraReadPort
 	cassandraWrite ports.CassandraWritePort
 	KGS            ports.KGS
-	baseURL        string
 	errLogger      *log.Logger
 }
 
