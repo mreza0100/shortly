@@ -30,8 +30,10 @@ services:
             healthcheck:
                   test: [
                               # little hack to make sure cassandra created the keyspace
-                              # because I did't had enough time to implement a wait for
-                              # ! it's not the best practice
+                              # because I did't had enough time to implement a "wait for"
+                              # it's not possible for app to connect without the keyspace
+                              # so this is a temporary workaround
+                              # ! it's not the best practice but it works for now
                               "CMD",
                               "cqlsh",
                               "-e",
@@ -60,7 +62,7 @@ services:
                   CASSANDRA_NUM_TOKENS: 128
                   # option to connect to cassandra directly. disabled by default
                   CASSANDRA_START_RPC: "true"
-                  # options to make cassandra use less memory
+                  # options to make cassandra use less memory(hopefully)
                   HEAP_NEWSIZE: 128M
                   MAX_HEAP_SIZE: 2048M
                   JVM_OPTS: "-Xms1024M -Xmx1024M"
