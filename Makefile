@@ -7,8 +7,14 @@ run:
 	# Update image
 	make build
 	# Running container in background
-	docker-compose up -d
-	# Now the container is running, you can find it in 10.0.0.10:${app_port}
+	docker-compose up -d --abort-on-container-exit
+	# Now the container is running, you can find it in ${app_host}:${app_port}
+
+seed:
+	# seed the database with random data.
+	# this is not a good way to do this as go(lang) is not a requirement for deployment.
+	# what I will do is to use docker container to run with seed flag.
+	go run ./cmd/shortly seed
 
 create-key-space:
 	# Create key space. we don't need to create it manually, because it is created automatically when you run the Cassandra container.
