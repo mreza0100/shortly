@@ -29,7 +29,7 @@ func main() {
 			Action:  actions.seed,
 		}, {
 			Name:    "health check",
-			Aliases: []string{"health"},
+			Aliases: []string{"healthcheck"},
 			Usage:   "check the health of the server",
 			Action:  actions.healthCheck,
 		},

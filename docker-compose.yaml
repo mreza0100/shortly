@@ -11,6 +11,11 @@ services:
             depends_on:
                   cassandra:
                         condition: service_healthy
+            healthcheck:
+                  test: ["CMD", "./build/exec", "healthcheck"]
+                  interval: 5s
+                  timeout: 5s
+                  retries: 60
 
       cassandra:
             image: cassandra:4.0.1
