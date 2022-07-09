@@ -4,10 +4,11 @@ services:
       shortly:
             image: shortly:latest
             container_name: shortly_app
+            env_file: .env
             build: .
             networks:
                   service_dependency_net:
-                        ipv4_address: 10.0.0.10
+                        ipv4_address: $app_host
             depends_on:
                   cassandra:
                         condition: service_healthy
@@ -20,11 +21,12 @@ services:
       cassandra:
             image: cassandra:4.0.1
             container_name: shortly_cassandra
+            env_file: .env
             volumes:
                   - "~/databases/cassandra_shortly/:/var/lib/cassandra/"
             networks:
                   service_dependency_net:
-                        ipv4_address: 10.0.0.11
+                        ipv4_address: $cassandra_host
             healthcheck:
                   test: [
                               # little hack to make sure cassandra created the keyspace
@@ -69,4 +71,4 @@ networks:
             name: shortly_service_dependency_net
             ipam:
                   config:
-                        - subnet: 10.0.0.0/24
+                        - subnet: $subnet
