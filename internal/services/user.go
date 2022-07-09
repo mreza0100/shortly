@@ -13,17 +13,17 @@ import (
 	password_hasher "github.com/mreza0100/shortly/pkg/password"
 )
 
-type UserServiceOptions struct {
-	CassandraRead  ports.StorageReadPort
-	CassandraWrite ports.StorageWritePort
+type UserServiceDep struct {
+	StorageRead    ports.StorageReadPort
+	StorageWrite   ports.StorageWritePort
 	PasswordHasher password_hasher.PasswordHasher
 	JwtUtils       jwt.JWTHelper
 }
 
-func NewUserService(opt *UserServiceOptions) ports.UserServicePort {
+func NewUserService(opt *UserServiceDep) ports.UserServicePort {
 	return &user{
-		cassandraRead:  opt.CassandraRead,
-		cassandraWrite: opt.CassandraWrite,
+		storageRead:    opt.StorageRead,
+		storageWrite:   opt.StorageWrite,
 		passwordHasher: opt.PasswordHasher,
 		jwtUtils:       opt.JwtUtils,
 		errLogger:      log.New(os.Stderr, "UserService: ", log.LstdFlags),
@@ -31,8 +31,8 @@ func NewUserService(opt *UserServiceOptions) ports.UserServicePort {
 }
 
 type user struct {
-	cassandraRead  ports.StorageReadPort
-	cassandraWrite ports.StorageWritePort
+	storageRead    ports.StorageReadPort
+	storageWrite   ports.StorageWritePort
 	passwordHasher password_hasher.PasswordHasher
 	jwtUtils       jwt.JWTHelper
 	errLogger      *log.Logger
@@ -43,7 +43,7 @@ func (s *user) Signup(ctx context.Context, email, password string) error {
 		return er.InvalidEmail
 	}
 
-	_, err := s.cassandraRead.GetUserByEmail(ctx, email)
+	_, err := s.storageRead.GetUserByEmail(ctx, email)
 	if err != nil {
 		if err != er.NotFound {
 			s.errLogger.Printf("Error getting user by email: %v", err)
@@ -59,14 +59,14 @@ func (s *user) Signup(ctx context.Context, email, password string) error {
 		return er.GeneralFailure
 	}
 
-	return s.cassandraWrite.UserSignup(ctx, &models.User{
+	return s.storageWrite.UserSignup(ctx, &models.User{
 		Email:    email,
 		Password: hashpass,
 	})
 }
 
 func (s *user) Signin(ctx context.Context, email, password string) (string, error) {
-	user, err := s.cassandraRead.GetUserByEmail(ctx, email)
+	user, err := s.storageRead.GetUserByEmail(ctx, email)
 	if err != nil {
 		if err == er.NotFound {
 			return "", er.InvalidCredentials

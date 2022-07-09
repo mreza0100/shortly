@@ -6,20 +6,23 @@ import (
 	"github.com/mreza0100/shortly/internal/ports"
 )
 
-type HealthServiceOptions struct {
-	CassandraRead ports.StorageReadPort
+//
+type HealthServiceDep struct {
+	StorageRead ports.StorageReadPort
 }
 
-func NewHealthService(opt *HealthServiceOptions) ports.HealthServicePort {
+func NewHealthService(opt *HealthServiceDep) ports.HealthServicePort {
 	return &health{
-		CassandraRead: opt.CassandraRead,
+		storageRead: opt.StorageRead,
 	}
 }
 
 type health struct {
-	CassandraRead ports.StorageReadPort
+	storageRead ports.StorageReadPort
 }
 
 func (h *health) CheckHealth(ctx context.Context) bool {
-	return h.CassandraRead.HealthCheck(ctx)
+	// check storage health
+	// storage usually takes a long time to start
+	return h.storageRead.HealthCheck(ctx)
 }

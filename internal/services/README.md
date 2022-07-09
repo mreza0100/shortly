@@ -1,3 +1,3 @@
-# Internal package includes libraries that are not available for use in the outside world.
+# internal/service includes the domain logic of the application.
 
-[Reference](https://github.com/golang-standards/project-layout/tree/master/pkg)
+## All the application core logic is in the services.

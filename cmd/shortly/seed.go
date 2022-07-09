@@ -20,16 +20,16 @@ func (a *actions) seed(c *cli.Context) error {
 		return err
 	}
 
-	userService := services.NewUserService(&services.UserServiceOptions{
-		CassandraRead:  cassandraRead,
-		CassandraWrite: cassandraWrite,
+	userService := services.NewUserService(&services.UserServiceDep{
+		StorageRead:    cassandraRead,
+		StorageWrite:   cassandraWrite,
 		JwtUtils:       jwtUtils,
 		PasswordHasher: passwordHasher,
 	})
-	linkService := services.NewLinkService(&services.LinkServiceOptions{
-		CassandraRead:  cassandraRead,
-		CassandraWrite: cassandraWrite,
-		KGS:            kgs,
+	linkService := services.NewLinkService(&services.LinkServiceDep{
+		StorageRead:  cassandraRead,
+		StorageWrite: cassandraWrite,
+		KGS:          kgs,
 	})
 
 	seed.SeedDatabase(&ports.Services{

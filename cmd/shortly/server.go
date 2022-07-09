@@ -21,19 +21,19 @@ func (a *actions) run(c *cli.Context) error {
 		return err
 	}
 
-	userService := services.NewUserService(&services.UserServiceOptions{
-		CassandraRead:  cassandraRead,
-		CassandraWrite: cassandraWrite,
+	userService := services.NewUserService(&services.UserServiceDep{
+		StorageRead:    cassandraRead,
+		StorageWrite:   cassandraWrite,
 		JwtUtils:       jwtUtils,
 		PasswordHasher: passwordHasher,
 	})
-	linkService := services.NewLinkService(&services.LinkServiceOptions{
-		CassandraRead:  cassandraRead,
-		CassandraWrite: cassandraWrite,
-		KGS:            kgs,
+	linkService := services.NewLinkService(&services.LinkServiceDep{
+		StorageRead:  cassandraRead,
+		StorageWrite: cassandraWrite,
+		KGS:          kgs,
 	})
-	healthService := services.NewHealthService(&services.HealthServiceOptions{
-		CassandraRead: cassandraRead,
+	healthService := services.NewHealthService(&services.HealthServiceDep{
+		StorageRead: cassandraRead,
 	})
 
 	server := http.NewHttpServer(http.NewHttpServerOpts{

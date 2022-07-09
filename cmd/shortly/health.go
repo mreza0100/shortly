@@ -12,8 +12,8 @@ import (
 func (a *actions) healthCheck(c *cli.Context) error {
 	cassandraRead, _ := providers.CassandraRepositoryProvider(a.cfg.CassandraConnectionConfigs)
 
-	healthService := services.NewHealthService(&services.HealthServiceOptions{
-		CassandraRead: cassandraRead,
+	healthService := services.NewHealthService(&services.HealthServiceDep{
+		StorageRead: cassandraRead,
 	})
 
 	timeout := time.Duration(a.cfg.AppConfigs.HealthCheckTimeout) * time.Second
