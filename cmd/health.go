@@ -13,7 +13,8 @@ func (a *actions) healthCheck(c *cli.Context) error {
 
 	healthService := services.NewHealthService(cassandraRead)
 
-	ctx, cancel := context.WithTimeout(context.Background(), time.Duration(a.cfg.appConfigs.HealthCheckTimeout*int(time.Second)))
+	timeout := time.Duration(a.cfg.appConfigs.HealthCheckTimeout) * time.Second
+	ctx, cancel := context.WithTimeout(context.Background(), timeout)
 
 	isHealthy := healthService.CheckHealth(ctx)
 	cancel()

@@ -39,7 +39,8 @@ destroy:
 	docker-compose rm -f
 
 health-check:
-	go run ./cmd health
+	# Check if the db connection is working
+	go run ./cmd healthcheck
 
 test:
 	# Running test
