@@ -5,6 +5,7 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/mreza0100/shortly/internal/adapters/http/middleware"
+	"github.com/mreza0100/shortly/internal/adapters/http/presenters"
 	er "github.com/mreza0100/shortly/internal/pkg/errors"
 	"github.com/mreza0100/shortly/internal/pkg/jwt"
 	"github.com/mreza0100/shortly/internal/ports"
@@ -26,41 +27,29 @@ type linkHandlers struct {
 }
 
 func (u *linkHandlers) newLink() gin.HandlerFunc {
-	type RequestBody struct {
-		Link string `json:"link"`
-	}
-	type ResponseBody struct {
-		Short string `json:"short"`
-		Error string `json:"error"`
-	}
-
 	return func(c *gin.Context) {
-		var requestBody RequestBody
+		var requestBody presenters.NewLinkRequest
 		if err := c.ShouldBindJSON(&requestBody); err != nil {
-			c.JSON(http.StatusBadRequest, ResponseBody{Error: err.Error()})
+			c.JSON(http.StatusBadRequest, presenters.NewLinkResponse{Error: err.Error()})
 			return
 		}
 
 		short, err := u.linkService.NewLink(c.Request.Context(), requestBody.Link, "")
 		if err != nil {
-			c.JSON(er.Status(err), ResponseBody{Error: err.Error()})
+			c.JSON(er.Status(err), presenters.NewLinkResponse{Error: err.Error()})
 			return
 		}
 
-		c.JSON(http.StatusCreated, ResponseBody{Short: short})
+		c.JSON(http.StatusCreated, presenters.NewLinkResponse{Short: short})
 	}
 }
 
 func (u *linkHandlers) redirectByLink() gin.HandlerFunc {
-	type ResponseBody struct {
-		Error string `json:"error"`
-	}
-
 	return func(c *gin.Context) {
 		shortLink := c.Param(linkParamKey)
 		destination, err := u.linkService.GetDestinationByLink(c.Request.Context(), shortLink)
 		if err != nil {
-			c.JSON(er.Status(err), ResponseBody{Error: err.Error()})
+			c.JSON(er.Status(err), presenters.RedirectByLinkResponse{Error: err.Error()})
 			return
 		}
 

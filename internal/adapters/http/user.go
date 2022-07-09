@@ -4,6 +4,7 @@ import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
+	"github.com/mreza0100/shortly/internal/adapters/http/presenters"
 	er "github.com/mreza0100/shortly/internal/pkg/errors"
 	"github.com/mreza0100/shortly/internal/ports"
 )
@@ -21,23 +22,15 @@ type userHandlers struct {
 }
 
 func (u *userHandlers) signup() gin.HandlerFunc {
-	type RequestBody struct {
-		Email    string `json:"email"`
-		Password string `json:"password"`
-	}
-	type ResponseBody struct {
-		Error string `json:"error"`
-	}
-
 	return func(c *gin.Context) {
-		var requestBody RequestBody
+		var requestBody presenters.SigninRequest
 		if err := c.ShouldBindJSON(&requestBody); err != nil {
-			c.JSON(http.StatusBadRequest, ResponseBody{Error: err.Error()})
+			c.JSON(http.StatusBadRequest, presenters.SigninResponse{Error: err.Error()})
 			return
 		}
 
 		if err := u.userService.Signup(c.Request.Context(), requestBody.Email, requestBody.Password); err != nil {
-			c.JSON(er.Status(err), ResponseBody{Error: err.Error()})
+			c.JSON(er.Status(err), presenters.SigninResponse{Error: err.Error()})
 			return
 		}
 		c.Status(http.StatusCreated)
@@ -46,28 +39,19 @@ func (u *userHandlers) signup() gin.HandlerFunc {
 }
 
 func (u *userHandlers) signin() gin.HandlerFunc {
-	type RequestBody struct {
-		Email    string `json:"email"`
-		Password string `json:"password"`
-	}
-	type ResponseBody struct {
-		Token string `json:"token"`
-		Error string `json:"error"`
-	}
-
 	return func(c *gin.Context) {
-		var requestBody RequestBody
+		var requestBody presenters.SigninRequest
 		if err := c.ShouldBindJSON(&requestBody); err != nil {
-			c.JSON(http.StatusBadRequest, ResponseBody{Error: err.Error()})
+			c.JSON(http.StatusBadRequest, presenters.SigninResponse{Error: err.Error()})
 			return
 		}
 
 		token, err := u.userService.Signin(c.Request.Context(), requestBody.Email, requestBody.Password)
 		if err != nil {
-			c.JSON(er.Status(err), ResponseBody{Error: err.Error()})
+			c.JSON(er.Status(err), presenters.SigninResponse{Error: err.Error()})
 			return
 		}
 
-		c.JSON(http.StatusOK, ResponseBody{Token: token})
+		c.JSON(http.StatusOK, presenters.SigninResponse{Token: token})
 	}
 }
