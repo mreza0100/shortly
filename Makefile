@@ -14,7 +14,7 @@ create-key-space:
 	# Create key space. we don't need to create it manually, because it is created automatically when you run the Cassandra container.
 	docker container exec -it shortly_cassandra bash -c "CQLSH_PORT=${cassandra_port} CQLSH_HOST=${cassandra_host} cqlsh -e \"CREATE KEYSPACE IF NOT EXISTS shortly WITH replication = {'class':'SimpleStrategy', 'replication_factor':1};\""
 
-dev-dependency-up:
+dev-dependency:
 	# Make Cassandra available
 	docker-compose up -d cassandra
 
