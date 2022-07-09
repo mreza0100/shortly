@@ -28,7 +28,7 @@ type Configs struct {
 	CassandraConnectionConfigs *CassandraConnectionConfigs
 }
 
-func LoadConfigs() *Configs {
+func ConfigProvider() *Configs {
 	v := viper.New()
 
 	var result map[string]interface{}

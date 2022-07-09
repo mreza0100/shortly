@@ -10,7 +10,7 @@ import (
 )
 
 func (a *actions) healthCheck(c *cli.Context) error {
-	cassandraRead, _ := providers.GetCassandraRepo(a.cfg.CassandraConnectionConfigs)
+	cassandraRead, _ := providers.CassandraRepositoryProvider(a.cfg.CassandraConnectionConfigs)
 
 	healthService := services.NewHealthService(&services.HealthServiceOptions{
 		CassandraRead: cassandraRead,

@@ -1,5 +1,28 @@
 # URL Shortener
 
+## Deploy
+### Requirements
+- [Git](https://git-scm.com/book/en/v2/Getting-Started-Installing-Git)
+- [Docker](https://docs.docker.com/get-docker/)
+- [Docker Compose](https://docs.docker.com/compose/install/)
+- [Makefile](https://stackoverflow.com/questions/3915067/what-are-makefiles-make-install)
+
+### 1. git clone
+```
+git clone https://github.com/mreza0100/shortly
+```
+### 2. cd into the directory
+```
+cd shortly
+```
+### 3. copy and config(no need for simple deploy) ".env.example" to ".env"
+```
+cp ./.env.example ./.env
+```
+### 4. run dependencies and the app
+```
+make run
+```
 ## Start Development
 ### Requirements
 
@@ -31,28 +54,6 @@ make dev-dependency
 ```
 make dev
 ```
-## Deploy
-### Requirements
-- [Git](https://git-scm.com/book/en/v2/Getting-Started-Installing-Git)
-- [Docker](https://docs.docker.com/get-docker/)
-- [Docker Compose](https://docs.docker.com/compose/install/)
-- [Makefile](https://stackoverflow.com/questions/3915067/what-are-makefiles-make-install)
-
-### 1. git clone
-```
-git clone https://github.com/mreza0100/shortly
-```
-### 2. cd into the directory
-```
-cd shortly
-```
-### 3. copy and config(no need for simple deploy) ".env.example" to ".env"
-```
-cp ./.env.example ./.env
-```
-### 4. run dependencies
-```
-make run
-```
+# Talk is cheap, show me the code
 
 

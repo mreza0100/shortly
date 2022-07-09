@@ -3,4 +3,4 @@
 
 
 
-[Refrence](https://github.com/golang-standards/project-layout/tree/master/cmd)
+[Reference](https://github.com/golang-standards/project-layout/tree/master/cmd)

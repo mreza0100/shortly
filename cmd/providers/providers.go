@@ -11,7 +11,7 @@ import (
 	"github.com/mreza0100/shortly/internal/ports"
 )
 
-func GetCassandraRepo(cfg *CassandraConnectionConfigs) (ports.CassandraReadPort, ports.CassandraWritePort) {
+func CassandraRepositoryProvider(cfg *CassandraConnectionConfigs) (ports.CassandraReadPort, ports.CassandraWritePort) {
 	session, err := cassandra_connection.CreateConnection(&cassandra_connection.ConnectionConfigs{
 		Host:     cfg.Host,
 		Port:     cfg.Port,
@@ -29,7 +29,7 @@ func GetCassandraRepo(cfg *CassandraConnectionConfigs) (ports.CassandraReadPort,
 	return cassandraRead, cassandraWrite
 }
 
-func NewKGS(cassandraRead ports.CassandraReadPort, cassandraWrite ports.CassandraWritePort) (ports.KGS, error) {
+func KGSProvider(cassandraRead ports.CassandraReadPort, cassandraWrite ports.CassandraWritePort) (ports.KGS, error) {
 	counter, err := cassandraRead.GetCounter(context.Background())
 	if err != nil {
 		return nil, err

@@ -15,7 +15,7 @@ type actions struct {
 func main() {
 	app := cli.NewApp()
 	actions := new(actions)
-	actions.cfg = providers.LoadConfigs()
+	actions.cfg = providers.ConfigProvider()
 
 	app.Commands = []cli.Command{
 		{

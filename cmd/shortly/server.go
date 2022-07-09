@@ -12,11 +12,11 @@ import (
 )
 
 func (a *actions) run(c *cli.Context) error {
-	cassandraRead, cassandraWrite := providers.GetCassandraRepo(a.cfg.CassandraConnectionConfigs)
+	cassandraRead, cassandraWrite := providers.CassandraRepositoryProvider(a.cfg.CassandraConnectionConfigs)
 	jwtUtils := jwt.New(a.cfg.AppConfigs.JWTSecret, convert.HourToDuration(a.cfg.AppConfigs.JWTExpire))
 	passwordHasher := password_hasher.New(a.cfg.AppConfigs.Salt)
 
-	kgs, err := providers.NewKGS(cassandraRead, cassandraWrite)
+	kgs, err := providers.KGSProvider(cassandraRead, cassandraWrite)
 	if err != nil {
 		return err
 	}
