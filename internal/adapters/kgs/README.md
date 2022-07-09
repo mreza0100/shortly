@@ -1,6 +1,5 @@
-# KGS - Key Generator Service
+# KGS (Key Generator Service) Driven Adapter
 ## What is KGS?
-KGS is a driven adapter.
 
 In normal link shortening services, the key is a string of random characters, so the system must search the database to find out if the key is duplicated.
 
