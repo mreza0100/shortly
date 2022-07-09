@@ -1,13 +1,11 @@
 package er
 
 import (
-	"fmt"
 	"net/http"
 )
 
+// Handeling status codes gracefully
 func Status(err error) int {
-	fmt.Println(err)
-
 	switch err {
 	case NotFound:
 		return http.StatusNotFound
@@ -25,7 +23,7 @@ func Status(err error) int {
 		return http.StatusBadRequest
 
 	case GeneralFailure:
-		fallthrough
+		return http.StatusInternalServerError
 	default:
 		return http.StatusInternalServerError
 	}
