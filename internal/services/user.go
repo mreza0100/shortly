@@ -2,7 +2,9 @@ package services
 
 import (
 	"context"
+	"log"
 	"net/mail"
+	"os"
 
 	"github.com/mreza0100/shortly/internal/models"
 	"github.com/mreza0100/shortly/internal/ports"
@@ -24,6 +26,7 @@ func NewUserService(opt UserServiceOptions) ports.UserServicePort {
 		cassandraWrite: opt.CassandraWrite,
 		passwordHasher: opt.PasswordHasher,
 		jwtUtils:       opt.JwtUtils,
+		errLogger:      log.New(os.Stderr, "UserService: ", log.LstdFlags),
 	}
 }
 
@@ -32,6 +35,7 @@ type user struct {
 	cassandraWrite ports.CassandraWritePort
 	passwordHasher password_hasher.PasswordHasher
 	jwtUtils       jwt.JWTHelper
+	errLogger      *log.Logger
 }
 
 func (s *user) Signup(ctx context.Context, email, password string) error {
@@ -42,6 +46,7 @@ func (s *user) Signup(ctx context.Context, email, password string) error {
 	_, err := s.cassandraRead.GetUserByEmail(ctx, email)
 	if err != nil {
 		if err != er.NotFound {
+			s.errLogger.Printf("Error getting user by email: %v", err)
 			return er.GeneralFailure
 		}
 	} else {
@@ -50,7 +55,8 @@ func (s *user) Signup(ctx context.Context, email, password string) error {
 
 	hashpass, err := s.passwordHasher.Hash(password)
 	if err != nil {
-		return err
+		s.errLogger.Printf("Error hashing password: %v", err)
+		return er.GeneralFailure
 	}
 
 	return s.cassandraWrite.UserSignup(ctx, &models.User{
@@ -62,16 +68,25 @@ func (s *user) Signup(ctx context.Context, email, password string) error {
 func (s *user) Signin(ctx context.Context, email, password string) (string, error) {
 	user, err := s.cassandraRead.GetUserByEmail(ctx, email)
 	if err != nil {
-		return "", err
+		if err == er.NotFound {
+			return "", er.InvalidCredentials
+		}
+		s.errLogger.Printf("Error getting user by email: %v", err)
+		return "", er.GeneralFailure
 	}
 	if user == nil {
-		return "", er.InvalidEmailOrPassword
+		return "", er.InvalidCredentials
 	}
 
 	err = s.passwordHasher.Compare(user.Password, password)
 	if err != nil {
-		return "", er.InvalidEmailOrPassword
+		return "", er.InvalidCredentials
 	}
 
-	return s.jwtUtils.CreateToken(user.Email)
+	token, err := s.jwtUtils.CreateToken(user.Email)
+	if err != nil {
+		s.errLogger.Printf("Error creating token: %v", err)
+		return "", er.GeneralFailure
+	}
+	return token, nil
 }

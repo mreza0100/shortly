@@ -2,7 +2,9 @@ package services
 
 import (
 	"context"
+	"log"
 	"net/url"
+	"os"
 
 	"github.com/mreza0100/shortly/internal/ports"
 	er "github.com/mreza0100/shortly/pkg/errors"
@@ -21,6 +23,7 @@ func NewLinkService(opt LinkServiceOptions) ports.LinkServicePort {
 		cassandraWrite: opt.CassandraWrite,
 		KGS:            opt.KGS,
 		baseURL:        opt.BaseURL,
+		errLogger:      log.New(os.Stderr, "UserService: ", log.LstdFlags),
 	}
 }
 
@@ -29,6 +32,7 @@ type link struct {
 	cassandraWrite ports.CassandraWritePort
 	KGS            ports.KGS
 	baseURL        string
+	errLogger      *log.Logger
 }
 
 func (l *link) NewLink(ctx context.Context, destination, userEmail string) (string, error) {
@@ -43,12 +47,23 @@ func (l *link) NewLink(ctx context.Context, destination, userEmail string) (stri
 	}
 
 	err = l.cassandraWrite.SaveLink(ctx, shortURL, parsedURL.String(), userEmail)
+	if err != nil {
+		l.errLogger.Printf("Error saving link: %e", err)
+		return "", er.GeneralFailure
+	}
 
-	return shortURL, err
+	return shortURL, nil
 }
 
 func (l *link) GetDestinationByLink(ctx context.Context, link string) (string, error) {
 	destination, err := l.cassandraRead.GetDestinationByLink(ctx, link)
+	if err != nil {
+		if err == er.NotFound {
+			return "", err
+		}
+		l.errLogger.Printf("Error getting destination by link: %e", err)
+		return "", er.GeneralFailure
+	}
 
-	return destination, err
+	return destination, nil
 }

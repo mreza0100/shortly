@@ -5,6 +5,7 @@ import (
 
 	"github.com/gocql/gocql"
 	"github.com/mreza0100/shortly/internal/models"
+	er "github.com/mreza0100/shortly/pkg/errors"
 )
 
 type cassandraWrite struct {
@@ -12,15 +13,23 @@ type cassandraWrite struct {
 }
 
 func (w *cassandraWrite) UserSignup(_ context.Context, user *models.User) error {
-	return w.session.Query(`INSERT INTO users (email, password) VALUES (?, ?)`, user.Email, user.Password).Exec()
+	err := w.session.Query(`INSERT INTO users (email, password) VALUES (?, ?)`, user.Email, user.Password).Exec()
+	if err != nil {
+		return er.GeneralFailure
+	}
+	return nil
 }
 
 func (w *cassandraWrite) SaveLink(_ context.Context, short, destination, email string) error {
-	return w.session.Query(`
+	err := w.session.Query(`
 		INSERT INTO links
 		(short, destination, user_email, created_at)
 		VALUES (?, ?, ?, toTimestamp(now()))
 	`, short, destination, email).Exec()
+	if err != nil {
+		return er.GeneralFailure
+	}
+	return nil
 }
 
 func (w *cassandraWrite) deleteCounter(_ context.Context) error {

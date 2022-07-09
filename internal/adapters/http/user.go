@@ -5,6 +5,7 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/mreza0100/shortly/internal/ports"
+	er "github.com/mreza0100/shortly/pkg/errors"
 )
 
 func registerUserRoutes(ginClient *gin.Engine, userService ports.UserServicePort) {
@@ -35,9 +36,8 @@ func (u *userHandlers) signup() gin.HandlerFunc {
 			return
 		}
 
-		err := u.userService.Signup(c.Request.Context(), requestBody.Email, requestBody.Password)
-		if err != nil {
-			c.JSON(http.StatusBadRequest, ResponseBody{Error: err.Error()})
+		if err := u.userService.Signup(c.Request.Context(), requestBody.Email, requestBody.Password); err != nil {
+			c.JSON(er.Status(err), ResponseBody{Error: err.Error()})
 			return
 		}
 		c.Status(http.StatusCreated)
@@ -64,7 +64,7 @@ func (u *userHandlers) signin() gin.HandlerFunc {
 
 		token, err := u.userService.Signin(c.Request.Context(), requestBody.Email, requestBody.Password)
 		if err != nil {
-			c.JSON(http.StatusBadRequest, ResponseBody{Error: err.Error()})
+			c.JSON(er.Status(err), ResponseBody{Error: err.Error()})
 			return
 		}
 

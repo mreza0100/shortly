@@ -14,6 +14,7 @@ type cassandraRead struct {
 
 func (r *cassandraRead) GetUserByEmail(_ context.Context, email string) (*models.User, error) {
 	iter := r.session.Query(`SELECT * FROM users WHERE email = ? LIMIT 1`, email).Iter()
+	defer iter.Close()
 
 	m := map[string]interface{}{}
 	if !iter.MapScan(m) {
@@ -33,9 +34,11 @@ func (r *cassandraRead) GetDestinationByLink(_ context.Context, shortLink string
 	if err := query.Exec(); err != nil {
 		return "", err
 	}
+	iter := query.Iter()
+	defer iter.Close()
 
 	var destination string
-	if !query.Iter().Scan(&destination) {
+	if !iter.Scan(&destination) {
 		return "", er.NotFound
 	}
 
@@ -50,9 +53,11 @@ func (r *cassandraRead) GetCounter(_ context.Context) (int64, error) {
 	if err := query.Exec(); err != nil {
 		return 0, err
 	}
+	iter := query.Iter()
+	defer iter.Close()
 
 	var counter int64
-	if !query.Iter().Scan(&counter) {
+	if !iter.Scan(&counter) {
 		return 0, er.NotFound
 	}
 

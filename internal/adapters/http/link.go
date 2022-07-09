@@ -6,6 +6,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/mreza0100/shortly/internal/adapters/http/middleware"
 	"github.com/mreza0100/shortly/internal/ports"
+	er "github.com/mreza0100/shortly/pkg/errors"
 	"github.com/mreza0100/shortly/pkg/jwt"
 )
 
@@ -42,7 +43,7 @@ func (u *linkHandlers) newLink() gin.HandlerFunc {
 
 		short, err := u.linkService.NewLink(c.Request.Context(), requestBody.Link, "")
 		if err != nil {
-			c.JSON(http.StatusBadRequest, ResponseBody{Error: err.Error()})
+			c.JSON(er.Status(err), ResponseBody{Error: err.Error()})
 			return
 		}
 
@@ -59,7 +60,7 @@ func (u *linkHandlers) redirectByLink() gin.HandlerFunc {
 		shortLink := c.Param(linkParamKey)
 		destination, err := u.linkService.GetDestinationByLink(c.Request.Context(), shortLink)
 		if err != nil {
-			c.JSON(http.StatusBadRequest, ResponseBody{Error: err.Error()})
+			c.JSON(er.Status(err), ResponseBody{Error: err.Error()})
 			return
 		}
 

@@ -19,6 +19,6 @@ var (
 
 // Error for wrong email or password
 var (
-	InvalidEmailOrPassword = errors.New("Invalid email or password")
-	EmailAlreadyExists     = errors.New("Email already exists")
+	InvalidCredentials = errors.New("Invalid email or password")
+	EmailAlreadyExists = errors.New("Email already exists")
 )
