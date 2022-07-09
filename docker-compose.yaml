@@ -23,7 +23,7 @@ services:
             container_name: shortly_cassandra
             env_file: .env
             volumes:
-                  - "~/databases/cassandra_shortly/:/var/lib/cassandra/"
+                  - "$cassandra_volume_path:/var/lib/cassandra/"
             networks:
                   service_dependency_net:
                         ipv4_address: $cassandra_host
