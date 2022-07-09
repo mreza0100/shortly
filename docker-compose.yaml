@@ -1,29 +1,67 @@
 version: "2.4"
 
 services:
+      shortly:
+            image: shortly:latest
+            container_name: shortly_app
+            build: .
+            networks:
+                  service_dependency_net:
+                        ipv4_address: 10.0.0.10
+            depends_on:
+                  cassandra:
+                        condition: service_healthy
+
       cassandra:
             image: cassandra:4.0.1
-            container_name: link_cassandra00
-            hostname: cassandra00
+            container_name: shortly_cassandra
+            volumes:
+                  - "~/databases/cassandra_shortly/:/var/lib/cassandra/"
+            networks:
+                  service_dependency_net:
+                        ipv4_address: 10.0.0.11
             healthcheck:
-                  test: ["CMD", "cqlsh", "-e", "describe keyspaces"]
+                  test: [
+                              # little hack to make sure cassandra created the keyspace
+                              # because I did't had enough time to implement a wait for
+                              # ! it's not the best practice
+                              "CMD",
+                              "cqlsh",
+                              "-e",
+                              "CREATE KEYSPACE IF NOT EXISTS shortly WITH replication = {'class':'SimpleStrategy', 'replication_factor':1};",
+                        ]
                   interval: 5s
                   timeout: 5s
                   retries: 60
-            ports:
-                  - 7000:7000
-                  - 7001:7001
-                  - 7199:7199
-                  - 9042:9042
-                  - 9160:9160
-            volumes:
-                  - "~/databases/cassandra_linkshortner/data:/var/lib/cassandra"
-                  # - ~databases/cassandra_linkshortner/etc:/etc/cassandra
+            hostname: cassandra
             environment:
-                  CASSANDRA_SEEDS: "cassandra00"
+                  # option to set the IP addresses in order to seed for this cassandra instance.
+                  # in here I'm using the IP address of the cassandra instance that I'm
+                  # running on the same machine as the one I'm seeding for.
+                  # this instance is talking to himselft on port 9042.
+                  # as you can see the hostname: cassandra above, is the same as the one in here
+                  CASSANDRA_SEEDS: "cassandra"
+                  # option to set the "cluster" name of this node
                   CASSANDRA_CLUSTER_NAME: SolarSystem
+                  # option to set the "datacenter" name of this node
                   CASSANDRA_DC: Mars
+                  # option to set the "rack" name of this node
                   CASSANDRA_RACK: West
+                  # option to choose how to locate nodes and route requests
                   CASSANDRA_ENDPOINT_SNITCH: GossipingPropertyFileSnitch
+                  # option to config virtual node token
                   CASSANDRA_NUM_TOKENS: 128
+                  # option to connect to cassandra directly. disabled by default
                   CASSANDRA_START_RPC: "true"
+                  # options to make cassandra use less memory
+                  HEAP_NEWSIZE: 128M
+                  MAX_HEAP_SIZE: 2048M
+                  JVM_OPTS: "-Xms1024M -Xmx1024M"
+
+networks:
+      service_dependency_net:
+            driver: bridge
+            name: shortly_service_dependency_net
+            ipam:
+                  config:
+                        - subnet: 10.0.0.0/24
