@@ -36,7 +36,7 @@ type user struct {
 
 func (s *user) Signup(ctx context.Context, email, password string) error {
 	if _, err := mail.ParseAddress(email); err != nil {
-		return er.EmailNotValid
+		return er.InvalidEmail
 	}
 
 	_, err := s.cassandraRead.GetUserByEmail(ctx, email)

@@ -32,7 +32,7 @@ type jwtHelper struct {
 
 func (h *jwtHelper) CreateToken(email string) (token string, err error) {
 	if email == "" {
-		return "", er.EmailNotValid
+		return "", er.InvalidEmail
 	}
 
 	claims := jwt.MapClaims{

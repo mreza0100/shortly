@@ -36,7 +36,7 @@ func (l *link) NewLink(ctx context.Context, destination, userEmail string) (stri
 
 	parsedURL, err := url.Parse(destination)
 	if err != nil {
-		return "", er.URLNotValid
+		return "", er.InvalidURL
 	}
 	if parsedURL.Scheme == "" {
 		parsedURL.Scheme = "http"
