@@ -6,8 +6,8 @@ import (
 	"net/url"
 	"os"
 
+	er "github.com/mreza0100/shortly/internal/pkg/errors"
 	"github.com/mreza0100/shortly/internal/ports"
-	er "github.com/mreza0100/shortly/pkg/errors"
 )
 
 type LinkServiceOptions struct {

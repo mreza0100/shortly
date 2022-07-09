@@ -5,7 +5,7 @@ import (
 	"log"
 
 	cassandra_repo "github.com/mreza0100/shortly/internal/adapters/cassandra"
-	cassandra_connection "github.com/mreza0100/shortly/pkg/connection/cassandra"
+	cassandra_connection "github.com/mreza0100/shortly/internal/pkg/connection/cassandra"
 
 	"github.com/mreza0100/shortly/internal/adapters/kgs"
 	"github.com/mreza0100/shortly/internal/ports"

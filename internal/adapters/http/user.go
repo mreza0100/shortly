@@ -4,8 +4,8 @@ import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
+	er "github.com/mreza0100/shortly/internal/pkg/errors"
 	"github.com/mreza0100/shortly/internal/ports"
-	er "github.com/mreza0100/shortly/pkg/errors"
 )
 
 func registerUserRoutes(ginClient *gin.Engine, userService ports.UserServicePort) {

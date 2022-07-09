@@ -7,9 +7,9 @@ import (
 	"os"
 
 	"github.com/mreza0100/shortly/internal/models"
+	er "github.com/mreza0100/shortly/internal/pkg/errors"
+	"github.com/mreza0100/shortly/internal/pkg/jwt"
 	"github.com/mreza0100/shortly/internal/ports"
-	er "github.com/mreza0100/shortly/pkg/errors"
-	"github.com/mreza0100/shortly/pkg/jwt"
 	password_hasher "github.com/mreza0100/shortly/pkg/password"
 )
 

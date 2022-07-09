@@ -2,10 +2,10 @@ package main
 
 import (
 	"github.com/mreza0100/shortly/internal/adapters/seed"
+	"github.com/mreza0100/shortly/internal/pkg/jwt"
 	"github.com/mreza0100/shortly/internal/ports"
 	"github.com/mreza0100/shortly/internal/services"
 	"github.com/mreza0100/shortly/pkg/convert"
-	"github.com/mreza0100/shortly/pkg/jwt"
 	password_hasher "github.com/mreza0100/shortly/pkg/password"
 	"github.com/urfave/cli"
 )

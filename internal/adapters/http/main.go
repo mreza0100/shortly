@@ -4,8 +4,8 @@ import (
 	"fmt"
 
 	"github.com/gin-gonic/gin"
+	"github.com/mreza0100/shortly/internal/pkg/jwt"
 	"github.com/mreza0100/shortly/internal/ports"
-	"github.com/mreza0100/shortly/pkg/jwt"
 )
 
 type NewHttpServerOpts struct {

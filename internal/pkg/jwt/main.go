@@ -4,7 +4,7 @@ import (
 	"time"
 
 	"github.com/dgrijalva/jwt-go"
-	er "github.com/mreza0100/shortly/pkg/errors"
+	er "github.com/mreza0100/shortly/internal/pkg/errors"
 )
 
 const (

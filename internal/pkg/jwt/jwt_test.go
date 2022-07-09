@@ -5,7 +5,7 @@ import (
 	"testing"
 	"time"
 
-	. "github.com/mreza0100/shortly/pkg/jwt"
+	. "github.com/mreza0100/shortly/internal/pkg/jwt"
 )
 
 func TestJWTHelper_CreateToken(t *testing.T) {

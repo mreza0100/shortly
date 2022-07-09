@@ -5,7 +5,7 @@ import (
 
 	"github.com/gocql/gocql"
 	"github.com/mreza0100/shortly/internal/models"
-	er "github.com/mreza0100/shortly/pkg/errors"
+	er "github.com/mreza0100/shortly/internal/pkg/errors"
 )
 
 type cassandraRead struct {

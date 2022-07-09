@@ -4,7 +4,7 @@ import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
-	"github.com/mreza0100/shortly/pkg/jwt"
+	"github.com/mreza0100/shortly/internal/pkg/jwt"
 )
 
 const UsernameKey = "username"

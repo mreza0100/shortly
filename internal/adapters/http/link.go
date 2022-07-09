@@ -5,9 +5,9 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/mreza0100/shortly/internal/adapters/http/middleware"
+	er "github.com/mreza0100/shortly/internal/pkg/errors"
+	"github.com/mreza0100/shortly/internal/pkg/jwt"
 	"github.com/mreza0100/shortly/internal/ports"
-	er "github.com/mreza0100/shortly/pkg/errors"
-	"github.com/mreza0100/shortly/pkg/jwt"
 )
 
 const linkParamKey = "link"
