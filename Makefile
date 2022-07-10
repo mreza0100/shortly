@@ -49,6 +49,8 @@ health-check:
 	go run ./cmd healthcheck
 
 test:
+	# Crear ejecutar tests
+	go clean -testcache
 	# Running test
 	go test -v ./...
 
