@@ -13,10 +13,15 @@ type InitKGSDep struct {
 	LastSavedCounter int64
 }
 
-func New(opt *InitKGSDep) ports.KGS {
+func New(dep *InitKGSDep) ports.KGS {
+	// Counter <= 0 not allowed
+	if dep.LastSavedCounter <= 0 {
+		dep.LastSavedCounter = 1
+	}
+
 	kgs := &kgs{
-		counter:     opt.LastSavedCounter,
-		saveCounter: opt.SaveCounter,
+		counter:     dep.LastSavedCounter,
+		saveCounter: dep.SaveCounter,
 		mu:          new(sync.Mutex),
 		seed:        make([]byte, 0, 62),
 	}
@@ -36,12 +41,14 @@ func (kgs *kgs) updateCounter() {
 	kgs.counter++
 
 	// TODO: a system to determine when to save the counter based on the number of keys generated and requests/secent
+	// save when the counters first digit is 0
 	if kgs.counter%10 == 0 {
-		go kgs.saveCounter(kgs.counter)
+		kgs.saveCounter(kgs.counter)
 	}
 }
 
 func (kgs *kgs) fillSeed() {
+	// seed is a byte array of 62 characters (0-9a-zA-Z)
 	for _, r := range [][2]byte{
 		{'0', '9'}, // numbers
 		{'a', 'z'}, // lowercase
@@ -55,6 +62,7 @@ func (kgs *kgs) fillSeed() {
 	}
 }
 
+// converting desired number to base62
 func (kgs *kgs) convertToBase62(c int64) string {
 	key := make([]byte, 0, 10)
 	for c := float64(kgs.counter); c != 0; {
@@ -64,6 +72,7 @@ func (kgs *kgs) convertToBase62(c int64) string {
 	return string(key)
 }
 
+// GenerateKey generates a new key
 func (kgs *kgs) GetKey() string {
 	kgs.mu.Lock()
 
