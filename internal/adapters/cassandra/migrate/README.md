@@ -5,7 +5,7 @@
 
 
 
-# 🤔 KGS future plans:
-### The migrations should be in a separate CQL file.
+# 🤔 Future plans:
+### The migrations should be in CQL files.
 ### We need a tool to migrate our Cassandra database with our CQL files.
-### And we also need migrations to have versions.
+### And we also need migrations to have versions, this will help us to know which migrations have been applied. The current implementation is maintainble.

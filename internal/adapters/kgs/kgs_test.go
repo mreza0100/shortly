@@ -87,7 +87,7 @@ func TestKGS(t *testing.T) {
 
 	for _, tt := range cases {
 		SaveCounterInterval := 0
-		kgs := New(&InitKGSDep{
+		kgs := New(&KGSDep{
 			SaveCounter: func(c int64) {
 				if tt.SaveCounterExpect == nil {
 					return

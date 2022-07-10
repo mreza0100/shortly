@@ -8,12 +8,14 @@ import (
 	"github.com/mreza0100/shortly/internal/ports"
 )
 
-type InitKGSDep struct {
+// kgs dependency
+type KGSDep struct {
 	SaveCounter      func(int64)
 	LastSavedCounter int64
 }
 
-func New(dep *InitKGSDep) ports.KGS {
+// Get New instance of KGS
+func New(dep *KGSDep) ports.KGS {
 	// Counter <= 0 not allowed
 	if dep.LastSavedCounter <= 0 {
 		dep.LastSavedCounter = 1
@@ -30,6 +32,7 @@ func New(dep *InitKGSDep) ports.KGS {
 	return kgs
 }
 
+// kgs implementation
 type kgs struct {
 	saveCounter func(int64)
 	counter     int64
@@ -37,10 +40,13 @@ type kgs struct {
 	mu          *sync.Mutex
 }
 
+// Update Counter - must be called after generating a new key
+// this function is NOT thread-safe. concurrency is handled by the caller
+// TODO: add thread-safety and handle concurrency here
 func (kgs *kgs) updateCounter() {
 	kgs.counter++
 
-	// TODO: a system to determine when to save the counter based on the number of keys generated and requests/secent
+	// TODO: a system to determine when to save the counter based on the number of keys generated and requests per second
 	// save when the counters first digit is 0
 	if kgs.counter%10 == 0 {
 		kgs.saveCounter(kgs.counter)

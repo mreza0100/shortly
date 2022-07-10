@@ -33,7 +33,7 @@ services:
                               # because I did't had enough time to implement a "wait for"
                               # it's not possible for app to connect without the keyspace
                               # so this is a temporary workaround
-                              # ! it's not the best practice but it works for now
+                              # ! it's not the best practice but it works - just for now
                               "CMD",
                               "cqlsh",
                               "-e",
