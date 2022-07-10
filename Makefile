@@ -7,7 +7,7 @@ run:
 	# Update image
 	make build
 	# Running container in background
-	docker-compose up -d --abort-on-container-exit
+	docker-compose up -d
 	# Now the container is running, you can find it in ${app_host}:${app_port}
 
 seed:
