@@ -20,6 +20,9 @@ func New(dep *KGSDep) ports.KGS {
 	if dep.LastSavedCounter <= 0 {
 		dep.LastSavedCounter = 1
 	}
+	if dep.LastSavedCounter != 0 {
+		dep.LastSavedCounter += 10
+	}
 
 	kgs := &kgs{
 		counter:     dep.LastSavedCounter,
