@@ -6,7 +6,7 @@ import (
 	"net/url"
 	"os"
 
-	er "github.com/mreza0100/shortly/internal/pkg/errors"
+	"github.com/mreza0100/shortly/internal/pkg/customerror"
 	"github.com/mreza0100/shortly/internal/ports"
 )
 
@@ -43,7 +43,7 @@ func (l *link) NewLink(ctx context.Context, destination, userEmail string) (stri
 	// Check if destination is a valid URL
 	parsedURL, err := url.Parse(destination)
 	if err != nil {
-		return "", er.InvalidURL
+		return "", customerror.InvalidURL
 	}
 	// Check if destination have a scheme (http or https)
 	if parsedURL.Scheme == "" {
@@ -55,7 +55,7 @@ func (l *link) NewLink(ctx context.Context, destination, userEmail string) (stri
 	err = l.storageWrite.SaveLink(ctx, shortLink, parsedURL.String(), userEmail)
 	if err != nil {
 		l.errLogger.Printf("Error saving link: %e", err)
-		return "", er.GeneralFailure
+		return "", customerror.GeneralFailure
 	}
 
 	return shortLink, nil
@@ -67,11 +67,11 @@ func (l *link) GetDestinationByLink(ctx context.Context, short string) (string, 
 	link, err := l.storageRead.GetLinkByShort(ctx, short)
 	if err != nil {
 		// if link not found, just return Not Found error
-		if err == er.NotFound {
+		if err == customerror.NotFound {
 			return "", err
 		}
 		l.errLogger.Printf("Error getting link by link: %e", err)
-		return "", er.GeneralFailure
+		return "", customerror.GeneralFailure
 	}
 
 	// Return destination URL

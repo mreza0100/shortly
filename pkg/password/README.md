@@ -8,3 +8,4 @@
 #### 2. Use random salt to generate hashed passwords to prevent rainbow table attacks.
 #### 3. Maybe change the library to [argon2](https://en.wikipedia.org/wiki/Argon2)?
 
+### I must say that hashing password concept is not something to do it in future. applying this palns can be very tricky after production and it's not a good idea to do it in the future.

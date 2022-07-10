@@ -18,6 +18,7 @@
 - Branded links - with a custom domain or custom route
 - Data export
 - Link history and reporting
+- Expiration for links
 
 ## Deploy
 ### Requirements
@@ -112,11 +113,12 @@ make dev
 - ```cmd```: The entry point of the app, contains the commands to run and initialize the app.
 - ```pkg```: packages that can be used by the outside world or can use in other projects. not customized to this project.
 
-- ```internal/adapters```: contains the driving and drived packages. more explanation in the adapters section below.
-- ```internal/models```: contains the models that can be used by the app.
-- ```internal/pkg```: packages that can be used by the app. customized to this project.
-- ```internal/ports```: contains the interfaces that are shared by the packages to interact with each other.
-- ```internal/services```: contains the business logic of the app.
+- ```internals/```
+  - ```adapters```: contains the driving and drived packages. more explanation in the adapters section below.
+  - ```models```: contains the models that can be used by the app.
+  - ```pkg```: packages that can be used by the app. customized to this project.
+  - ```ports```: contains the interfaces that are shared by the packages to interact with each other.
+  - ```services```: contains the business logic of the app.
 
 
 # adapters

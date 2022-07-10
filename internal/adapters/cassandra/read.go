@@ -6,7 +6,7 @@ import (
 
 	"github.com/gocql/gocql"
 	"github.com/mreza0100/shortly/internal/models"
-	er "github.com/mreza0100/shortly/internal/pkg/errors"
+	"github.com/mreza0100/shortly/internal/pkg/customerror"
 )
 
 type cassandraRead struct {
@@ -19,7 +19,7 @@ func (r *cassandraRead) GetUserByEmail(_ context.Context, email string) (*models
 
 	m := map[string]interface{}{}
 	if !iter.MapScan(m) {
-		return nil, er.NotFound
+		return nil, customerror.NotFound
 	}
 
 	user := &models.User{
@@ -36,7 +36,7 @@ func (r *cassandraRead) GetLinkByShort(_ context.Context, short string) (*models
 
 	m := map[string]interface{}{}
 	if !iter.MapScan(m) {
-		return nil, er.NotFound
+		return nil, customerror.NotFound
 	}
 
 	link := &models.Link{
@@ -59,7 +59,7 @@ func (r *cassandraRead) GetCounter(_ context.Context) (int64, error) {
 
 	var counter int64
 	if !iter.Scan(&counter) {
-		return 0, er.NotFound
+		return 0, customerror.NotFound
 	}
 
 	return counter, nil

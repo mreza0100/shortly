@@ -12,3 +12,4 @@
 - Refresh token
 - Save the user id in the token and not the email
 - Maybe change the name to authorization so we will not force to use the JWT token anymore and be able to implement authorization using any other method?
+

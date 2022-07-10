@@ -5,7 +5,7 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/mreza0100/shortly/internal/adapters/http/presenters"
-	er "github.com/mreza0100/shortly/internal/pkg/errors"
+	"github.com/mreza0100/shortly/internal/pkg/customerror"
 	"github.com/mreza0100/shortly/internal/ports"
 )
 
@@ -30,7 +30,7 @@ func (u *userHandlers) signup() gin.HandlerFunc {
 		}
 
 		if err := u.userService.Signup(c.Request.Context(), requestBody.Email, requestBody.Password); err != nil {
-			c.JSON(er.Status(err), presenters.SigninResponse{Error: err.Error()})
+			c.JSON(customerror.Status(err), presenters.SigninResponse{Error: err.Error()})
 			return
 		}
 		c.Status(http.StatusCreated)
@@ -48,7 +48,7 @@ func (u *userHandlers) signin() gin.HandlerFunc {
 
 		token, err := u.userService.Signin(c.Request.Context(), requestBody.Email, requestBody.Password)
 		if err != nil {
-			c.JSON(er.Status(err), presenters.SigninResponse{Error: err.Error()})
+			c.JSON(customerror.Status(err), presenters.SigninResponse{Error: err.Error()})
 			return
 		}
 
