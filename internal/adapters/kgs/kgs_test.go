@@ -43,7 +43,7 @@ func TestKGS(t *testing.T) {
 		},
 		{
 			name:             "normal functionality - start from 100",
-			LastSavedCounter: 100,
+			LastSavedCounter: 100 - 10, // must decrement counter when it's greater then 1
 			Expected: []string{
 				"C1", "D1",
 				"E1", "F1",
@@ -52,7 +52,7 @@ func TestKGS(t *testing.T) {
 		},
 		{
 			name:             "normal functionality - start from 100000",
-			LastSavedCounter: 100000,
+			LastSavedCounter: 100000 - 10,
 			Expected: []string{
 				"U0q", "V0q",
 				"W0q", "X0q",
@@ -61,7 +61,7 @@ func TestKGS(t *testing.T) {
 		},
 		{
 			name:             "normal functionality - start from 9999999999999999",
-			LastSavedCounter: 9999999999999999,
+			LastSavedCounter: 9999999999999999 - 10,
 			Expected: []string{
 				"aRgsGBBNJ", "aRgsGBBNJ",
 				"aRgsGBBNJ", "cRgsGBBNJ",
