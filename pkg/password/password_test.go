@@ -51,11 +51,11 @@ func TestPasswordHasher(t *testing.T) {
 
 			ph := New(tt.salt)
 
-			hashpass, err := ph.Hash(tt.password)
+			hashedPassword, err := ph.Hash(tt.password)
 			if err != nil {
 				t.Error(err)
 			}
-			if err := ph.Compare(hashpass, tt.password); err != nil {
+			if err := ph.Compare(hashedPassword, tt.password); err != nil {
 				t.Error(err)
 			}
 		})

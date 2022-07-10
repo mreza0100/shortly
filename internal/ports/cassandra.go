@@ -6,7 +6,7 @@ import (
 	"github.com/mreza0100/shortly/internal/models"
 )
 
-// Cassandra Read/Write interfaces
+// Storage Read/Write interfaces
 
 type StorageReadPort interface {
 	GetUserByEmail(ctx context.Context, email string) (*models.User, error)

@@ -35,7 +35,7 @@ func KGSProvider(cassandraRead ports.StorageReadPort, cassandraWrite ports.Stora
 		return nil, err
 	}
 
-	kgs := kgs.New(&kgs.InitKGSOptions{
+	kgs := kgs.New(&kgs.InitKGSDep{
 		SaveCounter: func(newCounter int64) {
 			if err := cassandraWrite.UpdateCounter(context.Background(), newCounter); err != nil {
 				log.Fatal("Failed to save counter: ", err)

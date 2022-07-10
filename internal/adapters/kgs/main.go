@@ -8,12 +8,12 @@ import (
 	"github.com/mreza0100/shortly/internal/ports"
 )
 
-type InitKGSOptions struct {
+type InitKGSDep struct {
 	SaveCounter      func(int64)
 	LastSavedCounter int64
 }
 
-func New(opt *InitKGSOptions) ports.KGS {
+func New(opt *InitKGSDep) ports.KGS {
 	kgs := &kgs{
 		counter:     opt.LastSavedCounter,
 		saveCounter: opt.SaveCounter,
