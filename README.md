@@ -223,7 +223,7 @@ curl --location --request POST '10.0.0.10:10000/link' \
 # 🤔 Technical plans:
 - Change architecture to microservices.
 - Make [KGS](https://github.com/mreza0100/shortly/tree/master/internal/adapters/kgs) a new service with cached data to solve the latency issue about the real-time generation of short links.
-- Implement CQRS.
+- Implement CQS (Command-Query Separation).
 - Make link shortener a microservice cluster with a load balancer between reading and write services.
 - Implement an internal cache layer for HOT links in the code to improve the performance of the app.
 - Add a Redis cache layer for the app.
