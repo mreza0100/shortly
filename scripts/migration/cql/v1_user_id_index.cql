@@ -4,9 +4,10 @@
    user_id_index */
 
 CREATE TABLE user_id_index (
-   id       int,
-   email    text,
-   password text,
+   id         UUID,
+   email      text,
+   password   text,
+   created_at timestamp,
 
    PRIMARY KEY (id)
 )

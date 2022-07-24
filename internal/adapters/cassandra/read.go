@@ -14,7 +14,7 @@ type cassandraRead struct {
 }
 
 func (r *cassandraRead) GetUserByEmail(_ context.Context, email string) (*models.User, error) {
-	iter := r.session.Query(`SELECT * FROM users WHERE email = ? LIMIT 1`, email).Iter()
+	iter := r.session.Query(`SELECT * FROM shortly.user_email_index WHERE email = ? LIMIT 1`, email).Iter()
 	defer iter.Close()
 
 	m := map[string]interface{}{}
@@ -31,7 +31,7 @@ func (r *cassandraRead) GetUserByEmail(_ context.Context, email string) (*models
 }
 
 func (r *cassandraRead) GetLinkByShort(_ context.Context, short string) (*models.Link, error) {
-	iter := r.session.Query(`SELECT * FROM links WHERE short = ? LIMIT 1`, short).Iter()
+	iter := r.session.Query(`SELECT * FROM shortly.link_short_index WHERE short = ? LIMIT 1`, short).Iter()
 	defer iter.Close()
 
 	m := map[string]interface{}{}
@@ -42,7 +42,7 @@ func (r *cassandraRead) GetLinkByShort(_ context.Context, short string) (*models
 	link := &models.Link{
 		Short:       m["short"].(string),
 		Destination: m["destination"].(string),
-		UserEmail:   m["user_email"].(string),
+		UserId:      m["user_id"].(string),
 		CreatedAt:   m["created_at"].(time.Time),
 	}
 
@@ -50,7 +50,7 @@ func (r *cassandraRead) GetLinkByShort(_ context.Context, short string) (*models
 }
 
 func (r *cassandraRead) GetCounter(_ context.Context) (int64, error) {
-	query := r.session.Query(`SELECT counter FROM counter LIMIT 1`)
+	query := r.session.Query(`SELECT counter FROM shortly.counter LIMIT 1`)
 	if err := query.Exec(); err != nil {
 		return 0, err
 	}

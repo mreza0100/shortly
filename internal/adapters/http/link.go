@@ -34,7 +34,8 @@ func (u *linkHandlers) newLink() gin.HandlerFunc {
 			return
 		}
 
-		short, err := u.linkService.NewLink(c.Request.Context(), requestBody.Link, "")
+		userId := c.GetString(middleware.UsernameKey)
+		short, err := u.linkService.NewLink(c.Request.Context(), requestBody.Link, userId)
 		if err != nil {
 			c.JSON(customerror.Status(err), presenters.NewLinkResponse{Error: err.Error()})
 			return

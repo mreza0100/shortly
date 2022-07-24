@@ -6,6 +6,7 @@ import (
 
 	cassandra_repo "github.com/mreza0100/shortly/internal/adapters/cassandra"
 	cassandra_connection "github.com/mreza0100/shortly/internal/pkg/connections/cassandra"
+	"github.com/mreza0100/shortly/internal/pkg/customerror"
 
 	"github.com/mreza0100/shortly/internal/adapters/kgs"
 	"github.com/mreza0100/shortly/internal/ports"
@@ -30,9 +31,15 @@ func CassandraRepositoryProvider(cfg *CassandraConnectionConfigs) (ports.Storage
 }
 
 func KGSProvider(cassandraRead ports.StorageReadPort, cassandraWrite ports.StorageWritePort) (ports.KGS, error) {
-	counter, err := cassandraRead.GetCounter(context.Background())
-	if err != nil {
+	ctx := context.Background()
+
+	counter, err := cassandraRead.GetCounter(ctx)
+	if err != nil && err != customerror.NotFound {
 		return nil, err
+	} else if err == customerror.NotFound {
+		if err := cassandraWrite.UpdateCounter(ctx, 1); err != nil {
+			return nil, err
+		}
 	}
 
 	kgs := kgs.New(&kgs.KGSDep{

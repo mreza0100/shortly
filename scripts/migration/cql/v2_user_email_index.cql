@@ -6,9 +6,10 @@
 
 
 CREATE TABLE user_email_index (
-   id       int,
-   email    text,
-   password text,
+   id         UUID,
+   email      text,
+   password   text,
+   created_at timestamp,
 
    PRIMARY KEY (email)
 )

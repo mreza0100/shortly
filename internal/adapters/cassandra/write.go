@@ -20,12 +20,12 @@ func (w *cassandraWrite) UserSignup(_ context.Context, user *models.User) error 
 	return nil
 }
 
-func (w *cassandraWrite) SaveLink(_ context.Context, short, destination, email string) error {
+func (w *cassandraWrite) SaveLink(_ context.Context, short, destination, userId string) error {
 	err := w.session.Query(`
-		INSERT INTO links
-		(short, destination, user_email, created_at)
+		INSERT INTO shortly.link_short_index
+		(short, destination, user_id, created_at)
 		VALUES (?, ?, ?, toTimestamp(now()))
-	`, short, destination, email).Exec()
+	`, short, destination, userId).Exec()
 	if err != nil {
 		return customerror.GeneralFailure
 	}
@@ -34,11 +34,11 @@ func (w *cassandraWrite) SaveLink(_ context.Context, short, destination, email s
 
 func (w *cassandraWrite) deleteCounter(_ context.Context) error {
 	// In cassandra, there is no way to delete a row by primary key or without a where clause.
-	return w.session.Query(`TRUNCATE counter`).Exec()
+	return w.session.Query(`TRUNCATE shortly.counter`).Exec()
 }
 
 func (w *cassandraWrite) insertCounter(_ context.Context, newCounter int64) error {
-	return w.session.Query(`INSERT INTO counter (counter) VALUES (?)`, newCounter).Exec()
+	return w.session.Query(`INSERT INTO shortly.counter (counter) VALUES (?)`, newCounter).Exec()
 }
 
 func (w *cassandraWrite) UpdateCounter(ctx context.Context, newCounter int64) error {

@@ -5,6 +5,6 @@ import "time"
 type Link struct {
 	Short       string
 	Destination string
-	UserEmail   string
+	UserId      string
 	CreatedAt   time.Time
 }

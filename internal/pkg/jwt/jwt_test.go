@@ -13,35 +13,28 @@ func TestJWTHelper_CreateToken(t *testing.T) {
 		name        string
 		secret      string
 		expireAfter time.Duration
-		email       string
+		id          string
 		wantErr     bool
 	}{
 		{
 			name:        "test 1 - simple token",
 			secret:      "secret",
 			expireAfter: time.Hour,
-			email:       "fake@mail.com",
+			id:          "1111-2222-3333-4444",
 			wantErr:     false,
-		},
-		{
-			name:        "test 2 - empty email",
-			secret:      "secret123",
-			expireAfter: time.Hour,
-			email:       "",
-			wantErr:     true,
 		},
 		{
 			name:        "test 2 - empty secret",
 			secret:      "",
 			expireAfter: time.Hour,
-			email:       "fake@mail.com",
+			id:          "1111-2222-3333-4444",
 			wantErr:     true,
 		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			jwt := New(tt.secret, tt.expireAfter)
-			gotToken, err := jwt.CreateToken(tt.email)
+			gotToken, err := jwt.CreateToken(tt.id)
 			if err != nil {
 				fmt.Println(err, tt.name)
 				if tt.wantErr {
@@ -63,8 +56,8 @@ func TestJWTHelper_CreateToken(t *testing.T) {
 				t.Errorf("JWTHelper.ParseToken() error = %v, wantErr %v", err, tt.wantErr)
 				return
 			}
-			if gotEmail != tt.email {
-				t.Errorf("JWTHelper.ParseToken() = %v, want %v", gotEmail, tt.email)
+			if gotEmail != tt.id {
+				t.Errorf("JWTHelper.ParseToken() = %v, want %v", gotEmail, tt.id)
 				return
 			}
 		})

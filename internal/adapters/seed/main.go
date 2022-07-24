@@ -78,19 +78,19 @@ func (s *seed) createUser() (*models.User, error) {
 func (s *seed) fillLinks() {
 	for _, user := range s.users {
 		for i := 0; i < linkCount; i++ {
-			if err := s.createLink(user.Email); err != nil {
+			if err := s.createLink(user.Id); err != nil {
 				log.Fatal(err)
 			}
 		}
 	}
 }
 
-func (s *seed) createLink(userEmail string) error {
+func (s *seed) createLink(id string) error {
 	link := s.getRandomLink(10)
 	ctx := context.Background()
 
-	log.Printf("Creating link %s for user %s", link, userEmail)
-	if _, err := s.services.Link.NewLink(ctx, link, userEmail); err != nil {
+	log.Printf("Creating link %s for user %s", link, id)
+	if _, err := s.services.Link.NewLink(ctx, link, id); err != nil {
 		return err
 	}
 	return nil

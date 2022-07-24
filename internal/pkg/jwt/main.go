@@ -8,13 +8,13 @@ import (
 )
 
 const (
-	emailKey = "email"
-	expKey   = "exp"
+	idKey  = "id"
+	expKey = "exp"
 )
 
 type JWTHelper interface {
-	CreateToken(email string) (token string, err error)
-	ParseToken(token string) (email string, err error)
+	CreateToken(id string) (token string, err error)
+	ParseToken(token string) (id string, err error)
 	IsTokenValid(token string) (isValid bool)
 }
 
@@ -30,14 +30,10 @@ type jwtHelper struct {
 	expire time.Duration
 }
 
-func (h *jwtHelper) CreateToken(email string) (token string, err error) {
-	if email == "" {
-		return "", customerror.InvalidEmail
-	}
-
+func (h *jwtHelper) CreateToken(id string) (token string, err error) {
 	claims := jwt.MapClaims{
-		emailKey: email,
-		expKey:   time.Now().Add(time.Hour * h.expire).Unix(),
+		idKey:  id,
+		expKey: time.Now().Add(time.Hour * h.expire).Unix(),
 	}
 
 	tokenWithClaims := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
@@ -45,10 +41,8 @@ func (h *jwtHelper) CreateToken(email string) (token string, err error) {
 	return tokenWithClaims.SignedString(h.secret)
 }
 
-func (h *jwtHelper) ParseToken(token string) (email string, err error) {
-	t, err := jwt.Parse(token, func(token *jwt.Token) (interface{}, error) {
-		return h.secret, nil
-	})
+func (h *jwtHelper) ParseToken(token string) (id string, err error) {
+	t, err := jwt.Parse(token, func(token *jwt.Token) (interface{}, error) { return h.secret, nil })
 	if err != nil {
 		return "", customerror.InvalidToken
 	}
@@ -66,11 +60,11 @@ func (h *jwtHelper) ParseToken(token string) (email string, err error) {
 		return "", customerror.ExpiredToken
 	}
 
-	email, ok = claims[emailKey].(string)
+	id, ok = claims[idKey].(string)
 	if !ok {
 		return "", customerror.InvalidToken
 	}
-	return email, nil
+	return id, nil
 }
 
 func (h *jwtHelper) IsTokenValid(token string) (isValid bool) {

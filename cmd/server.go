@@ -1,6 +1,8 @@
 package main
 
 import (
+	"fmt"
+
 	"github.com/mreza0100/shortly/cmd/providers"
 	http "github.com/mreza0100/shortly/internal/adapters/http"
 	"github.com/mreza0100/shortly/internal/pkg/jwt"
@@ -18,6 +20,7 @@ func (a *actions) run(c *cli.Context) error {
 
 	kgs, err := providers.KGSProvider(cassandraRead, cassandraWrite)
 	if err != nil {
+		fmt.Println(33)
 		return err
 	}
 

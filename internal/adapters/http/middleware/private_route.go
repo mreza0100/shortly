@@ -20,13 +20,13 @@ func PrivateRoute(jwt jwt.JWTHelper) gin.HandlerFunc {
 			return
 		}
 
-		email, err := jwt.ParseToken(token)
+		id, err := jwt.ParseToken(token)
 		if err != nil {
 			ctx.JSON(http.StatusUnauthorized, ResponseBody{Error: "Invalid token"})
 			return
 		}
 
-		ctx.Set(UsernameKey, email)
+		ctx.Set(UsernameKey, id)
 		ctx.Next()
 	}
 }

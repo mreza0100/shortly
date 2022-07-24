@@ -6,6 +6,8 @@
 CREATE TABLE link_short_index (
    short       text,
    destination text,
+   user_id     UUID,
+   created_at  timestamp,
 
    PRIMARY KEY (short)
 )

@@ -100,7 +100,7 @@ func (s *user) Signin(ctx context.Context, email, password string) (string, erro
 	}
 
 	// User is valid, generate JWT token
-	token, err := s.jwtUtils.CreateToken(user.Email)
+	token, err := s.jwtUtils.CreateToken(user.Id)
 	if err != nil {
 		s.errLogger.Printf("Error creating token: %v", err)
 		return "", customerror.GeneralFailure

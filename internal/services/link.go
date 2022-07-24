@@ -36,7 +36,7 @@ type link struct {
 }
 
 // Service create new link and return short link
-func (l *link) NewLink(ctx context.Context, destination, userEmail string) (string, error) {
+func (l *link) NewLink(ctx context.Context, destination, userId string) (string, error) {
 	// Create new short link
 	shortLink := l.kgs.GetKey()
 
@@ -52,7 +52,7 @@ func (l *link) NewLink(ctx context.Context, destination, userEmail string) (stri
 	}
 
 	// Save new link to storage
-	err = l.storageWrite.SaveLink(ctx, shortLink, parsedURL.String(), userEmail)
+	err = l.storageWrite.SaveLink(ctx, shortLink, parsedURL.String(), userId)
 	if err != nil {
 		l.errLogger.Printf("Error saving link: %e", err)
 		return "", customerror.GeneralFailure

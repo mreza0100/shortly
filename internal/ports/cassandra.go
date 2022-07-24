@@ -17,6 +17,6 @@ type StorageReadPort interface {
 
 type StorageWritePort interface {
 	UserSignup(ctx context.Context, user *models.User) error
-	SaveLink(ctx context.Context, short, destination, email string) error
+	SaveLink(ctx context.Context, short, destination, userId string) error
 	UpdateCounter(ctx context.Context, newCounter int64) error
 }
