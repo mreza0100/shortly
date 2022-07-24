@@ -12,8 +12,22 @@ type cassandraWrite struct {
 	session *gocql.Session
 }
 
-func (w *cassandraWrite) UserSignup(_ context.Context, user *models.User) error {
-	err := w.session.Query(`INSERT INTO users (email, password) VALUES (?, ?)`, user.Email, user.Password).Exec()
+func (w *cassandraWrite) SaveUser(_ context.Context, user *models.User) error {
+	// TODO: a transaction would be more efficient. error is rare here, but possible.
+	err := w.session.Query(`
+		INSERT INTO shortly.user_id_index
+		(id, email, password, created_at) VALUES
+		(uuid(), ?, ?, toTimestamp(now()))
+	`, user.Email, user.Password).Exec()
+	if err != nil {
+		return customerror.GeneralFailure
+	}
+
+	err = w.session.Query(`
+		INSERT INTO shortly.user_email_index
+		(id, email, password, created_at) VALUES
+		(uuid(), ?, ?, toTimestamp(now()))
+	`, user.Email, user.Password).Exec()
 	if err != nil {
 		return customerror.GeneralFailure
 	}

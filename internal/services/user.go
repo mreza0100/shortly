@@ -68,7 +68,7 @@ func (s *user) Signup(ctx context.Context, email, password string) error {
 	}
 
 	// Save new user to storage
-	return s.storageWrite.UserSignup(ctx, &models.User{
+	return s.storageWrite.SaveUser(ctx, &models.User{
 		Email:    email,
 		Password: hashedPassword,
 	})
