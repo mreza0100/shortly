@@ -1,0 +1,10 @@
+version: "2.4"
+
+services:
+      cassandra-migrate:
+            image: justdomepaul/cassandra-migrate
+            container_name: shortly_cassandra_migration
+            volumes:
+                  - ./cassandra-migrate.yml:/cassandra-migrate.yml
+                  - ./cql:/cql
+            network_mode: "host"

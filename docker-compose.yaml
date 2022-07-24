@@ -37,7 +37,7 @@ services:
                               "CMD",
                               "cqlsh",
                               "-e",
-                              "CREATE KEYSPACE IF NOT EXISTS shortly WITH replication = {'class':'SimpleStrategy', 'replication_factor':1};",
+                              "CREATE KEYSPACE IF NOT EXISTS $shortly WITH replication = {'class':'SimpleStrategy', 'replication_factor':1};",
                         ]
                   interval: 5s
                   timeout: 5s

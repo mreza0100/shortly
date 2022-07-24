@@ -65,3 +65,15 @@ push:
 	git pull origin master
 	git pull
 	git push
+
+
+cassandra-attach:
+	docker container exec -it shortly_cassandra bash -c "CQLSH_PORT=${cassandra_port} CQLSH_HOST=${cassandra_host} cqlsh"
+cassandra-migration-generate:
+	cd ./scripts/migration/cql && docker-compose run --rm cassandra-migrate -H ${cassandra_host} -y generate ${name}
+cassandra-migration-migrate:
+	cd ./scripts/migration/cql && docker-compose run --rm cassandra-migrate -H ${cassandra_host} -y migrate
+cassandra-migration-status:
+	cd ./scripts/migration/cql && docker-compose run --rm cassandra-migrate -H ${cassandra_host} -y status
+cassandra-migration-reset:
+	cd ./scripts/migration/cql && docker-compose run --rm cassandra-migrate -H ${cassandra_host} -y reset ${version}
